@@ -43,6 +43,10 @@ namespace ZooShop
             ((System.ComponentModel.ISupportInitialize)nudCategoryCode).BeginInit();
             buttonsPanel.SuspendLayout();
             SuspendLayout();
+            ConfigureLabel(lblCategoryCode, "Код категории:");
+            ConfigureLabel(lblCategoryName, "Название категории:");
+            ConfigureButton(btnCancel, "Отмена");
+            ConfigureButton(btnSave, "Сохранить");
             // 
             // mainLayout
             // 
@@ -116,7 +120,6 @@ namespace ZooShop
             // 
             btnCancel.Location = new Point(336, 13);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(75, 23);
             btnCancel.TabIndex = 0;
             btnCancel.Click += btnCancel_Click;
             // 
@@ -124,7 +127,6 @@ namespace ZooShop
             // 
             btnSave.Location = new Point(255, 13);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(75, 23);
             btnSave.TabIndex = 1;
             btnSave.Click += btnSave_Click;
             // 

@@ -14,9 +14,9 @@ namespace ZooShop.Entities
         private SpecialRequirements specialRequirements;
         private StorageConditions(double temperature, double humidity, SpecialRequirements specialRequirements)
         {
-            this.temperature = temperature;
-            this.humidity = humidity;
-            this.specialRequirements = specialRequirements;
+            Temperature = temperature;
+            Humidity = humidity;
+            SpecialRequirements = specialRequirements;
         }
         public static StorageConditions CreateConditions(double temperature, double humidity)
         {

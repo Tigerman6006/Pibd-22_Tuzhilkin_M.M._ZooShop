@@ -125,22 +125,15 @@ namespace ZooShop
             btnDelete.Click += btnDelete_Click;
             btnRefresh.Click += btnRefresh_Click;
 
-            btnRefresh.Location = new Point(730, 12);
-            btnDelete.Location = new Point(620, 12);
-            btnEdit.Location = new Point(485, 12);
             btnAdd.Location = new Point(365, 12);
+            btnEdit.Location = new Point(485, 12);
+            btnDelete.Location = new Point(620, 12);
+            btnRefresh.Location = new Point(730, 12);
 
-            btnRefresh.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnDelete.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnEdit.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnAdd.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
+            btnAdd.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            btnEdit.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            btnDelete.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            btnRefresh.Anchor = AnchorStyles.Left | AnchorStyles.Top;
 
             bottomPanel.Controls.Add(lblCount);
             bottomPanel.Controls.Add(btnAdd);

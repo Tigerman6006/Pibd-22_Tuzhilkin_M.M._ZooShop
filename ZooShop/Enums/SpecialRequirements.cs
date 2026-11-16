@@ -10,10 +10,10 @@ namespace ZooShop.Enums
     public enum SpecialRequirements
     {
         None = 0,
-        Fragile = 1 << 0,
-        Oxidizable = 1 << 1,
-        Volatile = 1 << 2,
-        Fragrant = 1 << 3,
-        LightProtection = 1 << 4
+        Fragile = 1,
+        Oxidizable = 2,
+        Volatile = 4,
+        Fragrant = 8,
+        LightProtection = 16
     }
 }

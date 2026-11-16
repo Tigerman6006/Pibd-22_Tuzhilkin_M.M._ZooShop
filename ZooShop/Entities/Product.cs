@@ -52,7 +52,7 @@ namespace ZooShop.Entities
         public StorageConditions? StorageConditions
         {
             get { return storageConditions;}
-            set { if (storageConditions is not null) { storageConditions = value; } }
+            set { if (value is not null) { storageConditions = value; } }
         }
         public int CalculateRemainingStock()
         {

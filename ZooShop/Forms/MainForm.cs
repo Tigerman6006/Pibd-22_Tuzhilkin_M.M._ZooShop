@@ -15,8 +15,7 @@ namespace ZooShop
 
             _serviceProvider = serviceProvider;
 
-            lblDate.Text = DateTime.Now.ToString(
-                "dd.MM.yyyy");
+            lblDate.Text = DateTime.Now.ToString("dd.MM.yyyy");
 
             lblStatus.Text = "Система готова к работе";
         }

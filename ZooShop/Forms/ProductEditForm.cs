@@ -123,7 +123,9 @@ namespace ZooShop
                         txtName.Text.Trim(),
                         nudPurchasePrice.Value,
                         nudSellingPrice.Value,
-                        dtpExpirationDate.Value,
+                        DateTime.SpecifyKind(
+                            dtpExpirationDate.Value,
+                            DateTimeKind.Utc),
                         stockNorm,
                         storageConditions
                     );
@@ -136,8 +138,7 @@ namespace ZooShop
                     _editingProduct.Name = txtName.Text.Trim();
                     _editingProduct.PurchasePrice = nudPurchasePrice.Value;
                     _editingProduct.SellingPrice = nudSellingPrice.Value;
-                    _editingProduct.ExpirationDate = dtpExpirationDate.Value;
-
+                    _editingProduct.ExpirationDate = DateTime.SpecifyKind(dtpExpirationDate.Value,DateTimeKind.Utc);
                     _editingProduct.StockNorm = stockNorm;
                     _editingProduct.StorageConditions = storageConditions;
 

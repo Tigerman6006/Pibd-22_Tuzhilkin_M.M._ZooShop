@@ -92,8 +92,12 @@ namespace ZooShop
 
                 ProductBatch batch = ProductBatch.CreateBatch(
                     batchNumber,
-                    arrivalDate,
-                    expirationDate,
+                    DateTime.SpecifyKind(
+                            dtpArrivalDate.Value,
+                            DateTimeKind.Utc),
+                    DateTime.SpecifyKind(
+                            dtpExpirationDate.Value,
+                            DateTimeKind.Utc),
                     (int)nudQuantity.Value,
                     product,
                     supplier);

@@ -24,7 +24,7 @@ namespace ZooShop
         private Button btnEdit;
         private Button btnDelete;
         private Button btnRefresh;
-
+        private FlowLayoutPanel buttonsPanel;
         protected override void Dispose(bool disposing)
         {
             if (disposing && components != null)
@@ -51,6 +51,14 @@ namespace ZooShop
             btnEdit = new Button();
             btnDelete = new Button();
             btnRefresh = new Button();
+            buttonsPanel = new FlowLayoutPanel();
+
+            buttonsPanel.Dock = DockStyle.Right;
+            buttonsPanel.FlowDirection = FlowDirection.LeftToRight;
+            buttonsPanel.WrapContents = false;
+            buttonsPanel.AutoSize = true;
+            buttonsPanel.Padding = new Padding(0);
+            buttonsPanel.Margin = new Padding(0);
 
             topPanel.SuspendLayout();
             bottomPanel.SuspendLayout();
@@ -122,33 +130,19 @@ namespace ZooShop
             btnDelete.Click += btnDelete_Click;
             btnRefresh.Click += btnRefresh_Click;
 
-            btnRefresh.Location = new Point(730, 12);
-            btnDelete.Location = new Point(620, 12);
-            btnEdit.Location = new Point(485, 12);
-            btnAdd.Location = new Point(365, 12);
 
-            btnRefresh.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnDelete.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnEdit.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnAdd.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
+            buttonsPanel.Controls.Add(btnAdd);
+            buttonsPanel.Controls.Add(btnEdit);
+            buttonsPanel.Controls.Add(btnDelete);
+            buttonsPanel.Controls.Add(btnRefresh);
 
             bottomPanel.Controls.Add(lblCount);
-            bottomPanel.Controls.Add(btnAdd);
-            bottomPanel.Controls.Add(btnEdit);
-            bottomPanel.Controls.Add(btnDelete);
-            bottomPanel.Controls.Add(btnRefresh);
+            bottomPanel.Controls.Add(buttonsPanel);
 
             // Форма.
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 480);
-            MinimumSize = new Size(650, 380);
+            MinimumSize = new Size(750, 380);
 
             StartPosition = FormStartPosition.CenterParent;
             Text = "Список категорий";

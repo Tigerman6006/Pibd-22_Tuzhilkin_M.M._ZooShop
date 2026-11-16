@@ -69,7 +69,9 @@ namespace ZooShop
                         nudSellingPrice.Value,
                         txtSpecies.Text.Trim(),
                         txtBreed.Text.Trim(),
-                        dtpDateOfBirth.Value
+                        DateTime.SpecifyKind(
+                            dtpDateOfBirth.Value,
+                            DateTimeKind.Utc)
                     );
 
                     animal.PurchasePrice = nudPurchasePrice.Value;
@@ -83,7 +85,9 @@ namespace ZooShop
                     _editingAnimal.Species = txtSpecies.Text.Trim();
                     _editingAnimal.Breed = txtBreed.Text.Trim();
 
-                    _editingAnimal.DateOfBirth = dtpDateOfBirth.Value;
+                    _editingAnimal.DateOfBirth = DateTime.SpecifyKind(
+                            dtpDateOfBirth.Value,
+                            DateTimeKind.Utc);
 
                     _editingAnimal.PurchasePrice = nudPurchasePrice.Value;
                     _editingAnimal.SellingPrice = nudSellingPrice.Value;

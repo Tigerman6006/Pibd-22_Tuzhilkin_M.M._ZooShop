@@ -24,7 +24,7 @@ namespace ZooShop
         private Button btnEdit;
         private Button btnDelete;
         private Button btnRefresh;
-
+        private FlowLayoutPanel buttonsPanel;
         protected override void Dispose(bool disposing)
         {
             if (disposing && components != null)
@@ -39,6 +39,7 @@ namespace ZooShop
 
             topPanel = new Panel();
             bottomPanel = new Panel();
+            buttonsPanel = new FlowLayoutPanel();
 
             lblTitle = new Label();
             lblSearch = new Label();
@@ -51,6 +52,7 @@ namespace ZooShop
             btnEdit = new Button();
             btnDelete = new Button();
             btnRefresh = new Button();
+
 
             topPanel.SuspendLayout();
             bottomPanel.SuspendLayout();
@@ -104,6 +106,14 @@ namespace ZooShop
             bottomPanel.Dock = DockStyle.Bottom;
             bottomPanel.Height = 65;
             bottomPanel.Padding = new Padding(12);
+            
+            buttonsPanel.Dock = DockStyle.Right;
+            buttonsPanel.FlowDirection = FlowDirection.LeftToRight;
+            buttonsPanel.WrapContents = false;
+            buttonsPanel.AutoSize = true;
+            buttonsPanel.Padding = new Padding(0);
+            buttonsPanel.Margin = new Padding(0);
+            buttonsPanel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
 
             lblCount.Text = "Количество животных: 0";
             lblCount.AutoSize = true;
@@ -119,28 +129,13 @@ namespace ZooShop
             btnDelete.Click += btnDelete_Click;
             btnRefresh.Click += btnRefresh_Click;
 
-            btnRefresh.Location = new Point(730, 12);
-            btnDelete.Location = new Point(620, 12);
-            btnEdit.Location = new Point(485, 12);
-            btnAdd.Location = new Point(365, 12);
-
-            btnRefresh.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnDelete.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnEdit.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
-
-            btnAdd.Anchor =
-                AnchorStyles.Right | AnchorStyles.Top;
+            buttonsPanel.Controls.Add(btnAdd);
+            buttonsPanel.Controls.Add(btnEdit);
+            buttonsPanel.Controls.Add(btnDelete);
+            buttonsPanel.Controls.Add(btnRefresh);
 
             bottomPanel.Controls.Add(lblCount);
-            bottomPanel.Controls.Add(btnAdd);
-            bottomPanel.Controls.Add(btnEdit);
-            bottomPanel.Controls.Add(btnDelete);
-            bottomPanel.Controls.Add(btnRefresh);
+            bottomPanel.Controls.Add(buttonsPanel);
 
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(900, 520);

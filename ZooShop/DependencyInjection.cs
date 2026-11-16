@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using ZooShop.Data;
 using ZooShop.Repositories.Interfaces;
 using ZooShop.Repositories.Stubs;
 
@@ -12,9 +15,14 @@ namespace ZooShop
 
     public static class DependencyInjection
     {
-        public static ServiceProvider ConfigureServices()
+        public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            var services = new ServiceCollection();
+            var connectionString =
+                configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<DataContext>(options =>
+                options.UseNpgsql(connectionString));
+            
 
             // Репозитории
             services.AddScoped<IProductCategoryRepository,
@@ -66,8 +74,17 @@ namespace ZooShop
 
             services.AddTransient<SaleListForm>();
             services.AddTransient<SaleAddForm>();
+            
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseNpgsql(
+                    "Host=localhost;" +
+                    "Port=5432;" +
+                    "Database=ZooShopDb;" +
+                    "Username=postgres;" +
+                    "Password=88005553535");
+            });
 
-            return services.BuildServiceProvider();
         }
     }
 

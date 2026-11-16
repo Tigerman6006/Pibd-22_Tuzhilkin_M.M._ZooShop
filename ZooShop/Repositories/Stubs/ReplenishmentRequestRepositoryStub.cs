@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZooShop.Data;
 using ZooShop.Entities;
 using ZooShop.Repositories.Interfaces;
 
@@ -10,19 +13,143 @@ namespace ZooShop.Repositories.Stubs
 {
     public class ReplenishmentRequestRepositoryStub : IReplenishmentRequestRepository
     {
+        private readonly DataContext _context;
+        private readonly ILogger<ReplenishmentRequestRepositoryStub> _logger;
+
+        public ReplenishmentRequestRepositoryStub(
+            DataContext context,
+            ILogger<ReplenishmentRequestRepositoryStub> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
+
         public ReplenishmentRequest? GetById(int id)
-            => throw new NotImplementedException();
+        {
+            _logger.LogInformation(
+                "Получение заявки {RequestNumber}", id);
+
+            try
+            {
+                var request = _context.ReplenishmentRequests
+                    .Include(r => r.Product)
+                    .Include(r => r.Supplier)
+                    .FirstOrDefault(r => r.RequestNumber == id);
+
+                if (request == null)
+                {
+                    _logger.LogWarning("Заявка {RequestNumber} не найдена", id);
+                }
+
+                return request;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Ошибка получения заявки {RequestNumber}", id);
+                throw;
+            }
+        }
 
         public IEnumerable<ReplenishmentRequest> GetAll()
-            => throw new NotImplementedException();
+        {
+            _logger.LogInformation("Получение всех заявок на пополнение");
 
-        public void Add(ReplenishmentRequest request)
-            => throw new NotImplementedException();
+            try
+            {
+                var requests = _context.ReplenishmentRequests
+                    .Include(r => r.Product)
+                    .Include(r => r.Supplier)
+                    .ToList();
 
-        public void Update(ReplenishmentRequest request)
-            => throw new NotImplementedException();
+                _logger.LogInformation(
+                    "Получено заявок: {Count}", requests.Count);
+
+                return requests;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка получения заявок");
+                throw;
+            }
+        }
 
         public IEnumerable<ReplenishmentRequest> GetBySupplier(int supplierCode)
-            => throw new NotImplementedException();
+        {
+            _logger.LogInformation(
+                "Получение заявок поставщика {SupplierCode}", supplierCode);
+
+            try
+            {
+                var requests = _context.ReplenishmentRequests
+                    .Include(r => r.Product)
+                    .Include(r => r.Supplier)
+                    .Where(r =>
+                        EF.Property<int?>(r, "SupplierCode") == supplierCode)
+                    .ToList();
+
+                _logger.LogInformation(
+                    "Найдено заявок поставщика {SupplierCode}: {Count}",
+                    supplierCode, requests.Count);
+
+                return requests;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Ошибка получения заявок поставщика {SupplierCode}",
+                    supplierCode);
+                throw;
+            }
+        }
+
+        public void Add(ReplenishmentRequest request)
+        {
+            _logger.LogInformation(
+                "Создание заявки. ProductCode: {ProductCode}, Quantity: {Quantity}",
+                request.Product?.ProductCode,
+                request.RequiredQuantity);
+
+            try
+            {
+                _context.ReplenishmentRequests.Add(request);
+                _context.SaveChanges();
+
+                _logger.LogInformation(
+                    "Заявка {RequestNumber} успешно создана",
+                    request.RequestNumber);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Ошибка создания заявки на пополнение");
+                throw;
+            }
+        }
+
+        public void Update(ReplenishmentRequest request)
+        {
+            _logger.LogInformation(
+                "Обновление заявки {RequestNumber}. Status: {Status}",
+                request.RequestNumber,
+                request.Status);
+
+            try
+            {
+                _context.ReplenishmentRequests.Update(request);
+                _context.SaveChanges();
+
+                _logger.LogInformation(
+                    "Заявка {RequestNumber} обновлена",
+                    request.RequestNumber);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Ошибка обновления заявки {RequestNumber}",
+                    request.RequestNumber);
+                throw;
+            }
+        }
     }
 }

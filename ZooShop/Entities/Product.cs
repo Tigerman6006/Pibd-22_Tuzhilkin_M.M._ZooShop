@@ -10,21 +10,24 @@ namespace ZooShop.Entities
     {
         private int productCode;
         private DateTime expirationDate;
-        private StockNorm stockNorm;
-        private StorageConditions storageConditions; 
-        private Product(int productCode, string name, decimal purchasePrice, decimal sellingPrice, DateTime expirationDate, StockNorm stockNorm, StorageConditions storageConditions)
+        private StockNorm? stockNorm;
+        private StorageConditions? storageConditions; 
+        private Product(int productCode, string name, decimal purchasePrice, decimal sellingPrice, DateTime expirationDate)
         {
             this.productCode = productCode;
             this.name = name;
             this.purchasePrice = purchasePrice;
             this.sellingPrice = sellingPrice;
             this.expirationDate = expirationDate;
-            this.stockNorm = stockNorm;
-            this.storageConditions = storageConditions;
         }
-        public static Product CreateProduct(int productCode, string name, decimal purchasePrice, decimal sellingPrice, StockNorm stockNorm, StorageConditions storageConditions)
+        public static Product CreateProduct(int productCode, string name, decimal purchasePrice, decimal sellingPrice, DateTime expirationDate, StockNorm stockNorm, StorageConditions storageConditions)
         {
-            return new Product(productCode, name, purchasePrice, sellingPrice, DateTime.Now, stockNorm, storageConditions);
+            var product = new Product(productCode,name,purchasePrice,sellingPrice, expirationDate);
+
+            product.SetStockNorm(stockNorm);
+            product.SetStorageConditions(storageConditions);
+
+            return product;
         }
         public int ProductCode
         {
@@ -41,12 +44,12 @@ namespace ZooShop.Entities
                 }
             }
         }
-        public StockNorm StockNorm
+        public StockNorm? StockNorm
         {
             get { return stockNorm; }
             set { if (value is not null) { stockNorm = value; } }
         }
-        public StorageConditions StorageConditions
+        public StorageConditions? StorageConditions
         {
             get { return storageConditions;}
             set { if (storageConditions is not null) { storageConditions = value; } }
@@ -62,6 +65,15 @@ namespace ZooShop.Entities
             int currentStock = CalculateRemainingStock();
 
             return StockNorm.isThresholdExceeded(currentStock);
+        }
+        public void SetStockNorm(StockNorm stockNorm)
+        {
+            StockNorm = stockNorm;
+        }
+
+        public void SetStorageConditions(StorageConditions storageConditions)
+        {
+            StorageConditions = storageConditions;
         }
     }
 }

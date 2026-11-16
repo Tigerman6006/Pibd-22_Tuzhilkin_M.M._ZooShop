@@ -12,18 +12,23 @@ namespace ZooShop.Entities
         private DateTime saleDate;
         private int amount;
         private string paymentMethod;
-        private List<SaleItem> saleItems;
-        private Sale(int receiptNumber, DateTime saleDate, int amount, string paymentMethod, List<SaleItem> saleItems)
+        private List<SaleItem>? saleItems;
+        private Sale(int receiptNumber, DateTime saleDate, int amount, string paymentMethod)
         {
             this.receiptNumber = receiptNumber;
             this.saleDate = saleDate;
             this.amount = amount;
             this.paymentMethod = paymentMethod;
-            this.saleItems = saleItems;
         }
-        public static Sale CreateSale(int receiptNumber, int amount, string paymentMethod, List<SaleItem> saleItems)
+        public Sale()
         {
-            return new Sale(receiptNumber, DateTime.Now, amount, paymentMethod, saleItems);
+
+        }
+        public static Sale CreateSale(int receiptNumber, int amount, string paymentMethod, List<SaleItem>? saleItems)
+        {
+            var sale = new Sale(receiptNumber, DateTime.Now, amount, paymentMethod);
+            sale.SaleItems = saleItems;
+            return sale;
         }
         public int ReceiptNumber
         {
@@ -55,7 +60,7 @@ namespace ZooShop.Entities
                 }
             }
         }
-        public List<SaleItem> SaleItems
+        public List<SaleItem>? SaleItems
         {
             get { return saleItems; }
             set { saleItems = value; }

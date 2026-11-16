@@ -123,11 +123,11 @@ namespace ZooShop
                         txtName.Text.Trim(),
                         nudPurchasePrice.Value,
                         nudSellingPrice.Value,
+                        dtpExpirationDate.Value,
                         stockNorm,
                         storageConditions
                     );
 
-                    product.ExpirationDate = dtpExpirationDate.Value;
 
                     _productRepository.Add(product);
                 }

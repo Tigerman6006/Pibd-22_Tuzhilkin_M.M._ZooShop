@@ -88,9 +88,9 @@ namespace ZooShop.Entities
             request.AcceptBySupplier(this);
         }
 
-        public IReadOnlyList<ReplenishmentRequest> GetReplenishmentRequests()
+        public List<ReplenishmentRequest> ReplenishmentRequests
         {
-            return replenishmentRequests.AsReadOnly();
+            get { return replenishmentRequests; }
         }
     }
 }

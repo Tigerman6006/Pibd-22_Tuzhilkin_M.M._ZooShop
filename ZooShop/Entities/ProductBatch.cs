@@ -15,16 +15,14 @@ namespace ZooShop.Entities
         private int remainingQuantity;
         private Product products;
         private Supplier? supplier;
-        private static List<ProductBatch> allBatches = new List<ProductBatch>();
-        private ProductBatch(int batchNumber, DateTime arrivalDate, DateTime expirationDate, int quantityReceived, int remainingQuantity, Product products, Supplier? supplier)
+        private static List<ProductBatch>? allBatches = new List<ProductBatch>();
+        private ProductBatch(int batchNumber, DateTime arrivalDate, DateTime expirationDate, int quantityReceived, int remainingQuantity)
         {
             this.batchNumber = batchNumber;
             this.arrivalDate = arrivalDate;
             this.expirationDate = expirationDate;
             this.quantityReceived = quantityReceived;
             this.remainingQuantity = remainingQuantity;
-            this.products = products;
-            this.supplier = supplier;
         }
         public static ProductBatch CreateBatch(int batchNumber, DateTime arrivalDate, DateTime expirationDate, int quantityReceived, Product products, Supplier? supplier)
         {
@@ -33,10 +31,9 @@ namespace ZooShop.Entities
                 arrivalDate,
                 expirationDate,
                 quantityReceived,
-                quantityReceived,
-                products,
-                supplier);
-
+                quantityReceived);
+            batch.SetProduct(products);
+            batch.SetSupplier(supplier);
             allBatches.Add(batch);
 
             return batch;
@@ -83,6 +80,15 @@ namespace ZooShop.Entities
         public bool isExpired(DateTime expirationDate)
         {
             return DateTime.Now > expirationDate;
+        }
+        public void SetProduct(Product product)
+        {
+            Products = product ?? throw new ArgumentNullException(nameof(product));
+        }
+
+        public void SetSupplier(Supplier? supplier)
+        {
+            Supplier = supplier;
         }
     }
 }

@@ -8,10 +8,16 @@ namespace ZooShop.Entities
 {
     public abstract class Salable
     {
+        protected int salableCode;
         protected string name;
         protected decimal purchasePrice;
         protected decimal sellingPrice;
         
+        public int SalableCode
+        {
+            get {  return salableCode; }
+            set { salableCode = value; }
+        }
         public string Name
         {
             get { return name; }

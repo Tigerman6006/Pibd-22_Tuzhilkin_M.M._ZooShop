@@ -4,8 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using ZooShop;
 using ZooShop.Entities;
-using ZooShop.Repositories.Interfaces;
 using ZooShop.Enums;
+using ZooShop.Repositories.Interfaces;
 
 namespace ZooShop
 {
@@ -108,7 +108,126 @@ namespace ZooShop
             cmbStatusFilter.SelectedIndex = 0;
             LoadRequests();
         }
+        private void btnComplete_Click(object sender, EventArgs e)
+        {
+            if (dgvRequests.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Выберите заявку.",
+                    "Внимание",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
 
+                return;
+            }
+
+            var request = dgvRequests.SelectedRows[0].Tag
+                as ReplenishmentRequest;
+
+            if (request is null)
+                return;
+
+            if (request.Status != Status.InOrder)
+            {
+                MessageBox.Show(
+                    "Выполнить можно только заявку со статусом InOrder.",
+                    "Внимание",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Добавить на склад {request.RequiredQuantity} ед. товара «{request.Product?.Name}»?",
+                "Подтверждение выполнения",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes)
+                return;
+
+            try
+            {
+                _requestRepository.CompleteRequest(request.RequestNumber);
+
+                MessageBox.Show(
+                    "Заявка успешно выполнена. Остаток товара обновлён.",
+                    "Успешно",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                LoadRequests();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Не удалось выполнить заявку.\n{ex.Message}",
+                    "Ошибка",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+        private void btnReceive_Click(object sender, EventArgs e)
+        {
+            if (dgvRequests.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Выберите заявку.",
+                    "Внимание",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            var request = dgvRequests.SelectedRows[0].Tag
+                as ReplenishmentRequest;
+
+            if (request == null)
+                return;
+
+            if (request.Status != Status.Sent)
+            {
+                MessageBox.Show(
+                    "Получить можно только заявку со статусом Sent.",
+                    "Внимание",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Перевести заявку №{request.RequestNumber} в статус InOrder?",
+                "Подтверждение",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes)
+                return;
+
+            try
+            {
+                _requestRepository.ReceiveRequest(request.RequestNumber);
+
+                MessageBox.Show(
+                    "Заявка успешно получена.",
+                    "Успешно",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                LoadRequests();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Не удалось получить заявку.\n{ex.Message}",
+                    "Ошибка",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             LoadRequests();

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ZooShop.Data;
 using ZooShop.Entities;
 using ZooShop.Repositories.Interfaces;
+using ZooShop.Enums;
 
 namespace ZooShop.Repositories.Stubs
 {
@@ -150,6 +151,64 @@ namespace ZooShop.Repositories.Stubs
                     request.RequestNumber);
                 throw;
             }
+        }
+        public void CompleteRequest(int requestNumber)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+
+            try
+            {
+                var request = _context.ReplenishmentRequests
+                    .Include(r => r.Product)
+                    .Include(r => r.Supplier)
+                    .FirstOrDefault(r => r.RequestNumber == requestNumber);
+
+                if (request is null)
+                    throw new InvalidOperationException("Заявка не найдена.");
+
+                if (request.Status != Status.InOrder)
+                    throw new InvalidOperationException(
+                        "Выполнить можно только заявку со статусом «InOrder».");
+
+                if (request.Product is null)
+                    throw new InvalidOperationException(
+                        "У заявки не указан товар.");
+
+                if (request.RequiredQuantity <= 0)
+                    throw new InvalidOperationException(
+                        "Количество товара должно быть больше нуля.");
+
+                var batch = ProductBatch.CreateBatch(
+                    DateTime.UtcNow,
+                    request.Product.ExpirationDate,
+                    request.RequiredQuantity,
+                    request.Product,
+                    request.Supplier);
+
+                _context.ProductBatches.Add(batch);
+
+                request.CompleteRequest();
+
+                _context.SaveChanges();
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+        public void ReceiveRequest(int requestNumber)
+        {
+            var request = _context.ReplenishmentRequests
+                .FirstOrDefault(r => r.RequestNumber == requestNumber);
+
+            if (request == null)
+                throw new InvalidOperationException("Заявка не найдена.");
+
+            request.ReceiveRequest();
+
+            _context.SaveChanges();
         }
     }
 }

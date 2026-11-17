@@ -16,26 +16,24 @@ namespace ZooShop.Entities
         private Product products;
         private Supplier? supplier;
         private static List<ProductBatch>? allBatches = new List<ProductBatch>();
-        private ProductBatch(int batchNumber, DateTime arrivalDate, DateTime expirationDate, int quantityReceived, int remainingQuantity)
+        private ProductBatch(DateTime arrivalDate, DateTime expirationDate, int quantityReceived, int remainingQuantity)
         {
-            this.batchNumber = batchNumber;
             this.arrivalDate = arrivalDate;
             this.expirationDate = expirationDate;
             this.quantityReceived = quantityReceived;
             this.remainingQuantity = remainingQuantity;
         }
-        public static ProductBatch CreateBatch(int batchNumber, DateTime arrivalDate, DateTime expirationDate, int quantityReceived, Product products, Supplier? supplier)
+        public static ProductBatch CreateBatch(DateTime arrivalDate, DateTime expirationDate, int quantityReceived, Product products, Supplier? supplier)
         {
             ProductBatch batch = new ProductBatch(
-                batchNumber,
                 arrivalDate,
                 expirationDate,
                 quantityReceived,
                 quantityReceived);
             batch.SetProduct(products);
             batch.SetSupplier(supplier);
-            allBatches.Add(batch);
 
+            allBatches.Add(batch);
             return batch;
         }
         public int BatchNumber

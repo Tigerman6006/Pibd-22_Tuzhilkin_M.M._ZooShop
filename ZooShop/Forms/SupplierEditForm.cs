@@ -41,13 +41,9 @@ namespace ZooShop
             if (_supplier == null)
                 return;
 
-            nudSupplierCode.Value = _supplier.SupplierCode;
             txtName.Text = _supplier.Name;
             txtPhoneNumber.Text = _supplier.PhoneNumber;
             nudDeliveryLeadTime.Value = _supplier.DeliveryLeadTime;
-
-            // Код существующего поставщика не редактируем.
-            nudSupplierCode.Enabled = false;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -84,7 +80,6 @@ namespace ZooShop
                 if (_supplier == null)
                 {
                     Supplier newSupplier = Supplier.CreateSupplier(
-                        (int)nudSupplierCode.Value,
                         name,
                         phoneNumber,
                         (int)nudDeliveryLeadTime.Value);

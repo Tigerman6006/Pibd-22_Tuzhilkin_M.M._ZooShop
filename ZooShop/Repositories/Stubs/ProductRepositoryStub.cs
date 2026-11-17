@@ -21,7 +21,12 @@ namespace ZooShop.Repositories.Stubs
             _context = context;
             _logger = logger;
         }
-
+        public int CalculateRemainingStock(int productCode)
+        {
+            return _context.ProductBatches
+                .Where(batch => batch.Products.ProductCode == productCode)
+                .Sum(batch => (int?)batch.RemainingQuantity) ?? 0;
+        }
         public Product? GetById(int id)
         {
             _logger.LogInformation(

@@ -9,6 +9,7 @@ namespace ZooShop.Repositories.Interfaces
 {
     public interface IProductRepository : IRepository<Product, int>
     {
+        int CalculateRemainingStock(int productCode);
         IEnumerable<Product> GetByCategory(int categoryCode);
     }
 }

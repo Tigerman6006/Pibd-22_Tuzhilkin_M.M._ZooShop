@@ -257,15 +257,12 @@ namespace ZooShop
                     }
                 }
 
-                int receiptNumber = GenerateReceiptNumber();
 
                 var saleItems = new List<SaleItem>();
 
                 foreach (SaleDraftItem draft in _draftItems)
                 {
-                    int id = GenerateSaleItemNumber();
                     SaleItem saleItem = SaleItem.CreateSaleItem(
-                        id,
                         draft.Item,
                         draft.Quantity,
                         draft.UnitPrice,
@@ -275,16 +272,11 @@ namespace ZooShop
                 }
 
                 Sale sale = Sale.CreateSale(
-                    receiptNumber,
                     total,
                     cmbPaymentMethod.Text,
                     saleItems);
 
-
                 _saleRepository.Add(sale);
-
-                foreach (SaleItem item in saleItems)
-                    _saleItemRepository.Add(item);
 
                 foreach (var group in _draftItems
                     .Where(x => x.Item is Product)
@@ -298,7 +290,7 @@ namespace ZooShop
 
 
                 MessageBox.Show(
-                    $"Продажа №{receiptNumber} успешно оформлена.",
+                    $"Продажа №{sale.ReceiptNumber} успешно оформлена.",
                     "Продажа завершена",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -350,20 +342,7 @@ namespace ZooShop
             }
         }
 
-        private int GenerateReceiptNumber()
-        {
-            return _saleRepository.GetAll()
-                .Select(sale => sale.ReceiptNumber)
-                .DefaultIfEmpty(0)
-                .Max() + 1;
-        }
-        private int GenerateSaleItemNumber()
-        {
-            return _saleItemRepository.GetAll()
-                .Select(item => item.Id)
-                .DefaultIfEmpty(0)
-                .Max() + 1;
-        }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;

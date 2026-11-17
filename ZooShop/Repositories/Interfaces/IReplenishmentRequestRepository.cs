@@ -11,6 +11,8 @@ namespace ZooShop.Repositories.Interfaces
     {
         void Add(ReplenishmentRequest request);
         void Update(ReplenishmentRequest request);
+        void CompleteRequest(int requestNumber);
+        void ReceiveRequest(int requestNumber);
         IEnumerable<ReplenishmentRequest> GetBySupplier(int supplierCode);
     }
 }

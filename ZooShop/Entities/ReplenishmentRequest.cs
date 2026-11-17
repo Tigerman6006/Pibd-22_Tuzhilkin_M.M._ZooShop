@@ -14,11 +14,9 @@ namespace ZooShop.Entities
         private int requiredQuantity;
         private Status status;
         private Product? product;
-        private static int nextRequestNumber = 1;
         private Supplier? supplier;
-        private ReplenishmentRequest(int requestNumber, DateTime creationDate, int requiredQuantity, Status status)
+        private ReplenishmentRequest(DateTime creationDate, int requiredQuantity, Status status)
         {
-            this.requestNumber = requestNumber;
             this.creationDate = creationDate;
             this.requiredQuantity = requiredQuantity;
             this.status = status;
@@ -31,7 +29,6 @@ namespace ZooShop.Entities
         public static ReplenishmentRequest CreateRequest(int requiredQuantity, Product product)
         {
             var repReq = new ReplenishmentRequest(
-                nextRequestNumber++,
                 DateTime.Now,
                 requiredQuantity,
                 Status.None
@@ -99,7 +96,14 @@ namespace ZooShop.Entities
 
             Status = Status.InOrder;
         }
+        public void ReceiveRequest()
+        {
+            if (status != Status.Sent)
+                throw new InvalidOperationException(
+                    "Получить можно только отправленную заявку.");
 
+            Status = Status.InOrder;
+        }
         public void CompleteRequest()
         {
             if (status != Status.InOrder)

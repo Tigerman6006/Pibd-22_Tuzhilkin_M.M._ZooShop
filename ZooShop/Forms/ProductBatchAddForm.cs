@@ -88,10 +88,8 @@ namespace ZooShop
             try
             {
 
-                int batchNumber = GenerateBatchNumber();
 
                 ProductBatch batch = ProductBatch.CreateBatch(
-                    batchNumber,
                     DateTime.SpecifyKind(
                             dtpArrivalDate.Value,
                             DateTimeKind.Utc),
@@ -123,13 +121,6 @@ namespace ZooShop
             }
         }
 
-        private int GenerateBatchNumber()
-        {
-            return _batchRepository.GetAll()
-                .Select(batch => batch.BatchNumber)
-                .DefaultIfEmpty(0)
-                .Max() + 1;
-        }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {

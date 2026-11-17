@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
-
+﻿
 namespace ZooShop
 {
     partial class ReplenishmentRequestListForm
@@ -15,6 +13,8 @@ namespace ZooShop
 
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnComplete;
+        private System.Windows.Forms.Button btnReceive;
 
         protected override void Dispose(bool disposing)
         {
@@ -34,6 +34,8 @@ namespace ZooShop
 
             btnAdd = new System.Windows.Forms.Button();
             btnRefresh = new System.Windows.Forms.Button();
+            btnComplete = new System.Windows.Forms.Button();
+            btnReceive = new System.Windows.Forms.Button();
 
             ((System.ComponentModel.ISupportInitialize)dgvRequests).BeginInit();
             SuspendLayout();
@@ -84,7 +86,7 @@ namespace ZooShop
             dgvRequests.Columns.Add("Supplier", "Поставщик");
             dgvRequests.Columns.Add("Status", "Статус");
 
-            // Add
+            // Add button
             btnAdd.Location = new System.Drawing.Point(20, 465);
             btnAdd.Size = new System.Drawing.Size(160, 32);
             btnAdd.Text = "Создать заявку";
@@ -93,7 +95,7 @@ namespace ZooShop
                 System.Windows.Forms.AnchorStyles.Left;
             btnAdd.Click += btnAdd_Click;
 
-            // Refresh
+            // Refresh button
             btnRefresh.Location = new System.Drawing.Point(190, 465);
             btnRefresh.Size = new System.Drawing.Size(110, 32);
             btnRefresh.Text = "Обновить";
@@ -101,6 +103,24 @@ namespace ZooShop
                 System.Windows.Forms.AnchorStyles.Bottom |
                 System.Windows.Forms.AnchorStyles.Left;
             btnRefresh.Click += btnRefresh_Click;
+
+            // Complete button
+            btnComplete.Location = new System.Drawing.Point(310, 465);
+            btnComplete.Size = new System.Drawing.Size(190, 32);
+            btnComplete.Text = "Выполнить запрос";
+            btnComplete.Anchor =
+                System.Windows.Forms.AnchorStyles.Bottom |
+                System.Windows.Forms.AnchorStyles.Left;
+            btnComplete.Click += btnComplete_Click;
+            
+            // Receive button
+            btnReceive.Location = new System.Drawing.Point(510, 465);
+            btnReceive.Size = new System.Drawing.Size(170, 32);
+            btnReceive.Text = "Получить запрос";
+            btnReceive.Anchor =
+                System.Windows.Forms.AnchorStyles.Bottom |
+                System.Windows.Forms.AnchorStyles.Left;
+            btnReceive.Click += btnReceive_Click;
 
             // Form
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -113,8 +133,11 @@ namespace ZooShop
             Controls.Add(lblStatus);
             Controls.Add(cmbStatusFilter);
             Controls.Add(dgvRequests);
+
             Controls.Add(btnAdd);
             Controls.Add(btnRefresh);
+            Controls.Add(btnComplete);
+            Controls.Add(btnReceive);
 
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "Заявки на пополнение";

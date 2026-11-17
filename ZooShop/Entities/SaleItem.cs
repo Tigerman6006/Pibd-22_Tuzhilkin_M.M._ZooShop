@@ -10,12 +10,15 @@ namespace ZooShop.Entities
     {
         private int id;
         private Salable? salable;
+        private int? productCode;
+        private int? animalCode;
+        private Product? product;
+        private Animal? animal;
         private int quantity;
         private decimal price;
         private decimal discount;
-        private SaleItem(int id, int quantity,decimal price, decimal discount)
+        private SaleItem(int quantity,decimal price, decimal discount)
         {
-            this.id = id;
             this.quantity = quantity;
             this.price = price;
             this.discount = discount;
@@ -24,9 +27,9 @@ namespace ZooShop.Entities
         {
 
         }
-        public static SaleItem CreateSaleItem(int id, Salable? salable, int quantity, decimal price, decimal discount)
+        public static SaleItem CreateSaleItem( Salable? salable, int quantity, decimal price, decimal discount)
         {
-            var saleItem = new SaleItem(id, quantity, price, discount);
+            var saleItem = new SaleItem(quantity, price, discount);
             saleItem.Salable = salable;
             return saleItem;
         }

@@ -8,7 +8,6 @@ namespace ZooShop.Entities
 {
     public class Product:Salable
     {
-        private int productCode;
         private DateTime expirationDate;
         private StockNorm? stockNorm;
         private StorageConditions? storageConditions;
@@ -30,11 +29,7 @@ namespace ZooShop.Entities
 
             return product;
         }
-        public int ProductCode
-        {
-            get { return productCode; }
-            set { productCode = value; }
-        }
+
         public DateTime ExpirationDate
         {
             get { return expirationDate; }
@@ -68,7 +63,7 @@ namespace ZooShop.Entities
         public int CalculateRemainingStock()
         {
             return ProductBatch.GetAllBatches()
-                .Where(batch => batch.Products.ProductCode == ProductCode)
+                .Where(batch => batch.Products.SalableCode == SalableCode)
                 .Sum(batch => batch.RemainingQuantity);
         }
         public bool RequiresReplenishment()

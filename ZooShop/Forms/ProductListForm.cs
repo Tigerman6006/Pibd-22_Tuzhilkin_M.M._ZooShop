@@ -14,17 +14,19 @@ namespace ZooShop
     {
         private readonly IProductRepository _productRepository;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IProductBatchRepository _batchRepository;
 
         private List<Product> _products = new();
 
         public ProductListForm(
             IProductRepository productRepository,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, IProductBatchRepository batchRepository)
         {
             InitializeComponent();
 
             _productRepository = productRepository;
             _serviceProvider = serviceProvider;
+            _batchRepository = batchRepository;
 
             ConfigureGrid();
             LoadProducts();
@@ -125,7 +127,9 @@ namespace ZooShop
 
             foreach (Product product in filteredProducts)
             {
-                int remainingStock = product.CalculateRemainingStock();
+                int remainingStock = _batchRepository
+                        .GetByProduct(product.ProductCode)
+                        .Sum(batch => batch.RemainingQuantity);
 
                 int rowIndex = dgvProducts.Rows.Add(
                     product.ProductCode,

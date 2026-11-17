@@ -48,9 +48,9 @@ namespace ZooShop.Data
             {
                 entity.ToTable("Products");
 
-                entity.HasKey(p => p.ProductCode);
+                entity.HasKey(p => p.SalableCode);
 
-                entity.Property(p => p.ProductCode)
+                entity.Property(p => p.SalableCode)
                     .ValueGeneratedOnAdd();
 
                 entity.Property(p => p.Name)
@@ -96,9 +96,9 @@ namespace ZooShop.Data
             {
                 entity.ToTable("Animals");
 
-                entity.HasKey(a => a.AnimalCode);
+                entity.HasKey(a => a.SalableCode);
 
-                entity.Property(a => a.AnimalCode)
+                entity.Property(a => a.SalableCode)
                     .ValueGeneratedOnAdd();
 
                 entity.Property(a => a.Name)
@@ -225,15 +225,14 @@ namespace ZooShop.Data
                     .HasPrecision(12, 2);
 
                 entity.Property(s => s.PaymentMethod)
-                    .HasMaxLength(50);
+                    .HasMaxLength(50)
+                    .IsRequired();
 
-                modelBuilder.Entity<Sale>()
-                    .HasMany(s => s.SaleItems)
+                entity.HasMany(s => s.SaleItems)
                     .WithOne()
                     .HasForeignKey("ReceiptNumber")
                     .OnDelete(DeleteBehavior.Cascade);
             });
-
 
             modelBuilder.Entity<SaleItem>(entity =>
             {
@@ -241,8 +240,10 @@ namespace ZooShop.Data
 
                 entity.HasKey(i => i.Id);
 
-                modelBuilder.Entity<SaleItem>()
-                    .Ignore(i => i.Salable);
+                entity.HasOne(i => i.Salable).WithMany()
+                    .HasForeignKey(i => i.Salable.SalableCode)
+                    .OnDelete(DeleteBehavior.Restrict);
+                ;
 
                 entity.Property(i => i.Price)
                     .HasPrecision(12, 2);

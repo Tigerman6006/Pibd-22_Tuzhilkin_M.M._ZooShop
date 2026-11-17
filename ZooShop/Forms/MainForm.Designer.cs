@@ -76,7 +76,7 @@ namespace ZooShop
                 FontStyle.Bold);
 
             lblTitle.Location = new Point(30, 20);
-            lblTitle.Text = "PetShop";
+            lblTitle.Text = "ZooShop";
 
             lblSubtitle.AutoSize = true;
             lblSubtitle.Font = new Font(
@@ -232,7 +232,7 @@ namespace ZooShop
             MaximizeBox = false;
             StartPosition = FormStartPosition.CenterScreen;
 
-            Text = "PetShop — Главное меню";
+            Text = "ZooShop — Главное меню";
 
             FormClosing += MainForm_FormClosing;
 

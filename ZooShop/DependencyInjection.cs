@@ -74,7 +74,10 @@ namespace ZooShop
 
             services.AddTransient<SaleListForm>();
             services.AddTransient<SaleAddForm>();
-            
+
+            services.AddTransient<StockControlForm>();
+            services.AddTransient<SalesReportForm>();
+
             services.AddDbContext<DataContext>(options =>
             {
                 options.UseNpgsql(

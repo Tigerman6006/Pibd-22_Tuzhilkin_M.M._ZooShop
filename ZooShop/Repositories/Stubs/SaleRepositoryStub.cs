@@ -83,7 +83,8 @@ namespace ZooShop.Repositories.Stubs
             {
                 var sales = _context.Sales
                     .Include(s => s.SaleItems)
-                    .Where(s => s.SaleDate >= start && s.SaleDate <= end)
+                    .Where(s => s.SaleDate >= DateTime.SpecifyKind(start, DateTimeKind.Utc) 
+                    && s.SaleDate <= DateTime.SpecifyKind(end,DateTimeKind.Utc))
                     .ToList();
 
                 _logger.LogInformation(

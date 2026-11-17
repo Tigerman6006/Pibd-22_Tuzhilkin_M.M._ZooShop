@@ -35,8 +35,13 @@ namespace ZooShop
         {
             try
             {
-                DateTime start = dtpStartDate.Value.Date;
-                DateTime end = dtpEndDate.Value.Date;
+                DateTime start = DateTime.SpecifyKind(
+                    dtpStartDate.Value.Date,
+                    DateTimeKind.Utc);
+
+                DateTime end = DateTime.SpecifyKind(
+                    dtpEndDate.Value.Date,
+                    DateTimeKind.Utc);
 
                 if (end < start)
                 {

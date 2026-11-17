@@ -14,17 +14,21 @@ namespace ZooShop
     {
         private readonly IProductRepository _productRepository;
         private readonly Product? _editingProduct;
+        private readonly IProductCategoryRepository _categoryRepository;
 
         public ProductEditForm(
-            IProductRepository productRepository,
-            Product? product = null)
+    IProductRepository productRepository,
+    IProductCategoryRepository categoryRepository,
+    Product? product = null)
         {
             InitializeComponent();
 
             _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
             _editingProduct = product;
 
             LoadSpecialRequirements();
+            LoadCategories();
             LoadProductData();
 
             Text = _editingProduct == null
@@ -50,14 +54,12 @@ namespace ZooShop
         {
             if (_editingProduct == null)
             {
-                nudProductCode.Value = 1;
                 dtpExpirationDate.Value = DateTime.Today.AddMonths(6);
                 return;
             }
 
             Product product = _editingProduct;
 
-            nudProductCode.Value = product.ProductCode;
             txtName.Text = product.Name;
 
             nudPurchasePrice.Value = product.PurchasePrice;
@@ -92,11 +94,26 @@ namespace ZooShop
                     i,
                     selected.HasFlag(item));
             }
+            if (product.CategoryCode.HasValue)
+            {
+                cmbCategory.SelectedValue = product.CategoryCode.Value;
+            }
+            else
+            {
+                cmbCategory.SelectedIndex = -1;
+            }
 
-            // Код товара при редактировании менять нельзя.
-            nudProductCode.Enabled = false;
         }
+        private void LoadCategories()
+        {
+            var categories = _categoryRepository.GetAll().ToList();
 
+            cmbCategory.DataSource = categories;
+            cmbCategory.DisplayMember = nameof(ProductCategory.CategoryName);
+            cmbCategory.ValueMember = nameof(ProductCategory.CategoryCode);
+
+            cmbCategory.SelectedIndex = -1;
+        }
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateInput())
@@ -119,7 +136,6 @@ namespace ZooShop
                 if (_editingProduct == null)
                 {
                     Product product = Product.CreateProduct(
-                        (int)nudProductCode.Value,
                         txtName.Text.Trim(),
                         nudPurchasePrice.Value,
                         nudSellingPrice.Value,
@@ -129,7 +145,8 @@ namespace ZooShop
                         stockNorm,
                         storageConditions
                     );
-
+                    product.CategoryCode = cmbCategory.SelectedValue == null ? null
+                        : (int?)cmbCategory.SelectedValue;
 
                     _productRepository.Add(product);
                 }
@@ -141,6 +158,8 @@ namespace ZooShop
                     _editingProduct.ExpirationDate = DateTime.SpecifyKind(dtpExpirationDate.Value,DateTimeKind.Utc);
                     _editingProduct.StockNorm = stockNorm;
                     _editingProduct.StorageConditions = storageConditions;
+                    _editingProduct.CategoryCode = cmbCategory.SelectedValue == null ? null
+                        : (int?)cmbCategory.SelectedValue;
 
                     _productRepository.Update(_editingProduct);
                 }

@@ -32,6 +32,7 @@ namespace ZooShop.Repositories.Stubs
                 var product = _context.Products
                     .Include(p => p.StockNorm)
                     .Include(p => p.StorageConditions)
+                    .Include(p => p.Category)
                     .FirstOrDefault(p => p.ProductCode == id);
 
                 if (product == null)
@@ -67,6 +68,7 @@ namespace ZooShop.Repositories.Stubs
                 var products = _context.Products
                     .Include(p => p.StockNorm)
                     .Include(p => p.StorageConditions)
+                    .Include(p => p.Category)
                     .ToList();
 
                 _logger.LogInformation(
@@ -91,10 +93,10 @@ namespace ZooShop.Repositories.Stubs
             try
             {
                 var products = _context.Products
-                    .Where(p =>
-                        EF.Property<int>(p, "CategoryCode") == categoryCode)
+                    .Where(p => p.CategoryCode == categoryCode)
                     .Include(p => p.StockNorm)
                     .Include(p => p.StorageConditions)
+                    .Include(p => p.Category)
                     .ToList();
 
                 _logger.LogInformation(

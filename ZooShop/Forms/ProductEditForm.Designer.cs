@@ -7,7 +7,6 @@ namespace ZooShop
         private System.ComponentModel.IContainer components = null;
 
         private TableLayoutPanel mainLayout;
-        private Label lblProductCode;
         private Label lblName;
         private Label lblPurchasePrice;
         private Label lblSellingPrice;
@@ -18,8 +17,9 @@ namespace ZooShop
         private Label lblTemperature;
         private Label lblHumidity;
         private Label lblSpecialRequirements;
+        private Label lblCategory;
+        private ComboBox cmbCategory;
 
-        private NumericUpDown nudProductCode;
         private TextBox txtName;
         private NumericUpDown nudPurchasePrice;
         private NumericUpDown nudSellingPrice;
@@ -50,7 +50,6 @@ namespace ZooShop
             mainLayout = new TableLayoutPanel();
             buttonsPanel = new FlowLayoutPanel();
 
-            lblProductCode = new Label();
             lblName = new Label();
             lblPurchasePrice = new Label();
             lblSellingPrice = new Label();
@@ -62,7 +61,6 @@ namespace ZooShop
             lblHumidity = new Label();
             lblSpecialRequirements = new Label();
 
-            nudProductCode = new NumericUpDown();
             txtName = new TextBox();
             nudPurchasePrice = new NumericUpDown();
             nudSellingPrice = new NumericUpDown();
@@ -76,10 +74,11 @@ namespace ZooShop
 
             btnSave = new Button();
             btnCancel = new Button();
+            lblCategory = new Label();
+            cmbCategory = new ComboBox();
 
             mainLayout.SuspendLayout();
             buttonsPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)nudProductCode).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudPurchasePrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudSellingPrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMinimumStock).BeginInit();
@@ -91,7 +90,7 @@ namespace ZooShop
             SuspendLayout();
 
             mainLayout.ColumnCount = 2;
-            mainLayout.RowCount = 12;
+            mainLayout.RowCount = 13;
             mainLayout.Dock = DockStyle.Fill;
             mainLayout.Padding = new Padding(15);
             mainLayout.AutoSize = false;
@@ -106,14 +105,16 @@ namespace ZooShop
                 mainLayout.RowStyles.Add(
                     new RowStyle(SizeType.Absolute, 38F));
             }
+            mainLayout.RowStyles.Add(
+                new RowStyle(SizeType.Absolute, 38F));
 
             mainLayout.RowStyles.Add(
                 new RowStyle(SizeType.Absolute, 100F));
 
             mainLayout.RowStyles.Add(
                 new RowStyle(SizeType.Percent, 100F));
+            
 
-            ConfigureLabel(lblProductCode, "Код товара:");
             ConfigureLabel(lblName, "Название:");
             ConfigureLabel(lblPurchasePrice, "Закупочная цена:");
             ConfigureLabel(lblSellingPrice, "Цена продажи:");
@@ -124,8 +125,11 @@ namespace ZooShop
             ConfigureLabel(lblTemperature, "Температура:");
             ConfigureLabel(lblHumidity, "Влажность:");
             ConfigureLabel(lblSpecialRequirements, "Особые условия:");
+            ConfigureLabel(lblCategory, "Категория:");
 
-            ConfigureNumber(nudProductCode, 1, 1000000, 1);
+            cmbCategory.Dock = DockStyle.Fill;
+            cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
+
             ConfigureNumber(nudPurchasePrice, 0, 1000000, 2);
             ConfigureNumber(nudSellingPrice, 0, 1000000, 2);
             ConfigureNumber(nudMinimumStock, 0, 1000000, 0);
@@ -143,7 +147,6 @@ namespace ZooShop
             clbSpecialRequirements.CheckOnClick = true;
             clbSpecialRequirements.Height = 90;
 
-            AddRow(0, lblProductCode, nudProductCode);
             AddRow(1, lblName, txtName);
             AddRow(2, lblPurchasePrice, nudPurchasePrice);
             AddRow(3, lblSellingPrice, nudSellingPrice);
@@ -153,7 +156,8 @@ namespace ZooShop
             AddRow(7, lblReviewPeriod, nudReviewPeriod);
             AddRow(8, lblTemperature, nudTemperature);
             AddRow(9, lblHumidity, nudHumidity);
-            AddRow(10, lblSpecialRequirements, clbSpecialRequirements);
+            AddRow(10, lblCategory, cmbCategory);
+            AddRow(11, lblSpecialRequirements, clbSpecialRequirements);
 
             buttonsPanel.Dock = DockStyle.Fill;
             buttonsPanel.FlowDirection = FlowDirection.RightToLeft;
@@ -172,12 +176,12 @@ namespace ZooShop
             buttonsPanel.Controls.Add(btnCancel);
             buttonsPanel.Controls.Add(btnSave);
 
-            mainLayout.Controls.Add(buttonsPanel, 0, 11);
+            mainLayout.Controls.Add(buttonsPanel, 0, 12);
             mainLayout.SetColumnSpan(buttonsPanel, 2);
 
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(520, 570);
-            MinimumSize = new Size(500, 570);
+            ClientSize = new Size(520, 650);
+            MinimumSize = new Size(500, 650);
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
@@ -188,7 +192,6 @@ namespace ZooShop
             mainLayout.ResumeLayout(false);
             buttonsPanel.ResumeLayout(false);
 
-            ((System.ComponentModel.ISupportInitialize)nudProductCode).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudPurchasePrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudSellingPrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMinimumStock).EndInit();

@@ -126,7 +126,7 @@ namespace ZooShop.Data
                 entity.ToTable("ProductCategories");
 
                 entity.HasKey(c => c.CategoryCode);
-                
+
                 entity.Property(c => c.CategoryCode)
                     .ValueGeneratedOnAdd();
 
@@ -134,10 +134,10 @@ namespace ZooShop.Data
                     .IsRequired()
                     .HasMaxLength(100);
 
-                modelBuilder.Entity<ProductCategory>()
-                    .HasMany(c => c.Products)
-                    .WithOne()
-                    .HasForeignKey("CategoryCode")
+                entity.HasMany(c => c.Products)
+                    .WithOne(p => p.Category)
+                    .HasForeignKey(p => p.CategoryCode)
+                    .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 

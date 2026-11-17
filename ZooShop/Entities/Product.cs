@@ -11,18 +11,19 @@ namespace ZooShop.Entities
         private int productCode;
         private DateTime expirationDate;
         private StockNorm? stockNorm;
-        private StorageConditions? storageConditions; 
-        private Product(int productCode, string name, decimal purchasePrice, decimal sellingPrice, DateTime expirationDate)
+        private StorageConditions? storageConditions;
+        private int? categoryCode;
+        private ProductCategory? category;
+        private Product(string name, decimal purchasePrice, decimal sellingPrice, DateTime expirationDate)
         {
-            this.productCode = productCode;
             this.name = name;
             this.purchasePrice = purchasePrice;
             this.sellingPrice = sellingPrice;
             this.expirationDate = expirationDate;
         }
-        public static Product CreateProduct(int productCode, string name, decimal purchasePrice, decimal sellingPrice, DateTime expirationDate, StockNorm stockNorm, StorageConditions storageConditions)
+        public static Product CreateProduct(string name, decimal purchasePrice, decimal sellingPrice, DateTime expirationDate, StockNorm stockNorm, StorageConditions storageConditions)
         {
-            var product = new Product(productCode,name,purchasePrice,sellingPrice, expirationDate);
+            var product = new Product(name,purchasePrice,sellingPrice, expirationDate);
 
             product.SetStockNorm(stockNorm);
             product.SetStorageConditions(storageConditions);
@@ -53,6 +54,16 @@ namespace ZooShop.Entities
         {
             get { return storageConditions;}
             set { if (value is not null) { storageConditions = value; } }
+        }
+        public int? CategoryCode
+        {
+            get { return categoryCode; }
+            set { categoryCode = value; }
+        }
+        public ProductCategory? Category
+        {
+            get { return category; }
+            set { if(value is not null){ category = value; } }
         }
         public int CalculateRemainingStock()
         {

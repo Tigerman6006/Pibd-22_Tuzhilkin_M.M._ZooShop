@@ -301,8 +301,8 @@ namespace ZooShop
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Не удалось оформить продажу.\n{ex.Message}",
-                    "Ошибка",
+                    ex.ToString(), 
+                    "Не удалось оформить продажу",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }

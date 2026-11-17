@@ -32,7 +32,6 @@ namespace ZooShop
             LoadProducts();
         }
 
-        // Настройка таблицы.
         private void ConfigureGrid()
         {
             dgvProducts.AutoGenerateColumns = false;
@@ -92,7 +91,6 @@ namespace ZooShop
             });
         }
 
-        // Загрузка товаров из репозитория.
         private void LoadProducts()
         {
             try
@@ -111,7 +109,6 @@ namespace ZooShop
             }
         }
 
-        // Поиск по названию и коду.
         private void ApplyFilter()
         {
             string search = txtSearch.Text.Trim()
@@ -140,7 +137,6 @@ namespace ZooShop
                     remainingStock
                 );
 
-                // Сохраняем объект товара в строке.
                 dgvProducts.Rows[rowIndex].Tag = product;
             }
 
@@ -148,7 +144,6 @@ namespace ZooShop
                 $"Количество товаров: {filteredProducts.Count}";
         }
 
-        // Получение выбранного товара.
         private Product? GetSelectedProduct()
         {
             if (dgvProducts.SelectedRows.Count == 0)
@@ -157,7 +152,6 @@ namespace ZooShop
             return dgvProducts.SelectedRows[0].Tag as Product;
         }
 
-        // Добавление товара.
         private void btnAdd_Click(object sender, EventArgs e)
         {
             using ProductEditForm form =
@@ -170,7 +164,6 @@ namespace ZooShop
             }
         }
 
-        // Редактирование товара.
         private void btnEdit_Click(object sender, EventArgs e)
         {
             Product? product = GetSelectedProduct();
@@ -197,7 +190,6 @@ namespace ZooShop
             }
         }
 
-        // Удаление товара.
         private void btnDelete_Click(object sender, EventArgs e)
         {
             Product? product = GetSelectedProduct();
@@ -237,13 +229,11 @@ namespace ZooShop
             }
         }
 
-        // Обновление списка.
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             LoadProducts();
         }
 
-        // Поиск при вводе текста.
         private void txtSearch_TextChanged(
             object sender,
             EventArgs e)
@@ -251,7 +241,6 @@ namespace ZooShop
             ApplyFilter();
         }
 
-        // Двойной щелчок по строке открывает редактирование.
         private void dgvProducts_CellDoubleClick(
             object sender,
             DataGridViewCellEventArgs e)

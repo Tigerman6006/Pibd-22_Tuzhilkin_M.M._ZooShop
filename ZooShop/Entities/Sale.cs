@@ -25,7 +25,9 @@ namespace ZooShop.Entities
         }
         public static Sale CreateSale(int amount, string paymentMethod, List<SaleItem>? saleItems)
         {
-            var sale = new Sale( DateTime.Now, amount, paymentMethod);
+            var sale = new Sale(DateTime.SpecifyKind(
+                            DateTime.Now,
+                            DateTimeKind.Utc), amount, paymentMethod);
             sale.SaleItems = saleItems;
             return sale;
         }

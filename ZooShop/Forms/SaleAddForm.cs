@@ -58,7 +58,7 @@ namespace ZooShop
 
                 cmbItem.DataSource = products;
                 cmbItem.DisplayMember = nameof(Product.Name);
-                cmbItem.ValueMember = nameof(Product.ProductCode);
+                cmbItem.ValueMember = nameof(Product.SalableCode);
             }
             else
             {
@@ -66,7 +66,7 @@ namespace ZooShop
 
                 cmbItem.DataSource = animals;
                 cmbItem.DisplayMember = nameof(Animal.Name);
-                cmbItem.ValueMember = nameof(Animal.AnimalCode);
+                cmbItem.ValueMember = nameof(Animal.SalableCode);
             }
 
             cmbItem.SelectedIndex =
@@ -137,7 +137,7 @@ namespace ZooShop
 
                 int alreadyAdded = _draftItems
                     .Where(x => x.Item is Product p &&
-                                p.ProductCode == product.ProductCode)
+                                p.SalableCode == product.SalableCode)
                     .Sum(x => x.Quantity);
 
                 if (alreadyAdded + quantity > available)
@@ -153,7 +153,7 @@ namespace ZooShop
 
             if (item is Animal animal &&
                 _draftItems.Any(x => x.Item is Animal a &&
-                                     a.AnimalCode == animal.AnimalCode))
+                                     a.SalableCode == animal.SalableCode))
             {
                 MessageBox.Show(
                     "Это животное уже добавлено в чек.",
@@ -176,7 +176,7 @@ namespace ZooShop
         private int GetAvailableStock(Product product)
         {
             return _batchRepository
-                .GetByProduct(product.ProductCode)
+                .GetByProduct(product.SalableCode)
                 .Where(batch => batch.ExpirationDate.Date >= DateTime.Today)
                 .Sum(batch => batch.RemainingQuantity);
         }
@@ -245,7 +245,7 @@ namespace ZooShop
             {
                 foreach (var group in _draftItems
                     .Where(x => x.Item is Product)
-                    .GroupBy(x => ((Product)x.Item).ProductCode))
+                    .GroupBy(x => ((Product)x.Item).SalableCode))
                 {
                     Product product = (Product)group.First().Item;
                     int required = group.Sum(x => x.Quantity);
@@ -280,7 +280,7 @@ namespace ZooShop
 
                 foreach (var group in _draftItems
                     .Where(x => x.Item is Product)
-                    .GroupBy(x => ((Product)x.Item).ProductCode))
+                    .GroupBy(x => ((Product)x.Item).SalableCode))
                 {
                     Product product = (Product)group.First().Item;
                     int quantityToRemove = group.Sum(x => x.Quantity);
@@ -311,7 +311,7 @@ namespace ZooShop
         private void RemoveFromBatches(Product product, int quantity)
         {
             var batches = _batchRepository
-                .GetByProduct(product.ProductCode)
+                .GetByProduct(product.SalableCode)
                 .Where(batch =>
                     batch.RemainingQuantity > 0 &&
                     batch.ExpirationDate.Date >= DateTime.Today)

@@ -10,10 +10,9 @@ namespace ZooShop.Entities
     {
         private int id;
         private Salable? salable;
-        private int? productCode;
-        private int? animalCode;
-        private Product? product;
-        private Animal? animal;
+        private int? salableCode;
+        private Sale? sale;
+        private int? receiptNumber;
         private int quantity;
         private decimal price;
         private decimal discount;
@@ -38,6 +37,11 @@ namespace ZooShop.Entities
             get { return id; }
             set { id = value; }
         }
+        public int? SalableCode
+        {
+            get { return salableCode; }
+            set { salableCode = value; }
+        }
         public int Quantity
         {
             get { return quantity; }
@@ -58,6 +62,15 @@ namespace ZooShop.Entities
             get{ return salable; }
             set { if (value is not null) { salable = value; } }
         }
-
+        public Sale? Sale
+        {
+            get {return sale; }
+            set { sale = value; }
+        }
+        public int? ReceiptNumber
+        {
+            get { return receiptNumber; }
+            set { receiptNumber = value; }
+        }
     }
 }

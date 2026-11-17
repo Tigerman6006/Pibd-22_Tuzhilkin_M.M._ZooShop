@@ -36,37 +36,38 @@ namespace ZooShop.Data
             base.OnModelCreating(modelBuilder);
 
 
-            modelBuilder.Entity<Product>()
-                .HasBaseType((Type)null);
 
-            modelBuilder.Entity<Animal>()
-                .HasBaseType((Type)null);
+            modelBuilder.Entity<Salable>(entity =>
+            {
+                entity.UseTptMappingStrategy();
 
+                entity.ToTable("Salables");
+
+                entity.HasKey(s => s.SalableCode);
+
+                entity.Property(s => s.SalableCode)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(s => s.Name)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(s => s.PurchasePrice)
+                    .HasPrecision(12, 2);
+
+                entity.Property(s => s.SellingPrice)
+                    .HasPrecision(12, 2);
+            });
 
 
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.ToTable("Products");
 
-                entity.HasKey(p => p.SalableCode);
-
-                entity.Property(p => p.SalableCode)
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(p => p.Name)
-                    .IsRequired()
-                    .HasMaxLength(150);
-
-                entity.Property(p => p.PurchasePrice)
-                    .HasPrecision(12, 2);
-
-                entity.Property(p => p.SellingPrice)
-                    .HasPrecision(12, 2);
-
                 entity.Property(p => p.ExpirationDate)
                     .IsRequired();
 
-                modelBuilder.Entity<Product>().OwnsOne(p => p.StockNorm, norm =>
+                entity.OwnsOne(p => p.StockNorm, norm =>
                 {
                     norm.Property(n => n.MinimumStockLevel)
                         .HasColumnName("MinimumStockLevel");
@@ -78,7 +79,7 @@ namespace ZooShop.Data
                         .HasColumnName("ReviewPeriod");
                 });
 
-                modelBuilder.Entity<Product>().OwnsOne(p => p.StorageConditions, storage =>
+                entity.OwnsOne(p => p.StorageConditions, storage =>
                 {
                     storage.Property(s => s.Temperature)
                         .HasColumnName("StorageTemperature");
@@ -91,19 +92,9 @@ namespace ZooShop.Data
                 });
             });
 
-
             modelBuilder.Entity<Animal>(entity =>
             {
                 entity.ToTable("Animals");
-
-                entity.HasKey(a => a.SalableCode);
-
-                entity.Property(a => a.SalableCode)
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(a => a.Name)
-                    .IsRequired()
-                    .HasMaxLength(150);
 
                 entity.Property(a => a.Species)
                     .IsRequired()
@@ -111,12 +102,6 @@ namespace ZooShop.Data
 
                 entity.Property(a => a.Breed)
                     .HasMaxLength(100);
-
-                entity.Property(a => a.PurchasePrice)
-                    .HasPrecision(12, 2);
-
-                entity.Property(a => a.SellingPrice)
-                    .HasPrecision(12, 2);
             });
 
 
@@ -227,11 +212,6 @@ namespace ZooShop.Data
                 entity.Property(s => s.PaymentMethod)
                     .HasMaxLength(50)
                     .IsRequired();
-
-                entity.HasMany(s => s.SaleItems)
-                    .WithOne()
-                    .HasForeignKey("ReceiptNumber")
-                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<SaleItem>(entity =>
@@ -239,11 +219,6 @@ namespace ZooShop.Data
                 entity.ToTable("SaleItems");
 
                 entity.HasKey(i => i.Id);
-
-                entity.HasOne(i => i.Salable).WithMany()
-                    .HasForeignKey(i => i.Salable.SalableCode)
-                    .OnDelete(DeleteBehavior.Restrict);
-                ;
 
                 entity.Property(i => i.Price)
                     .HasPrecision(12, 2);
@@ -253,6 +228,16 @@ namespace ZooShop.Data
 
                 entity.Property(i => i.Quantity)
                     .IsRequired();
+
+                entity.HasOne(i => i.Salable)
+                    .WithMany()
+                    .HasForeignKey(i => i.SalableCode)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(i => i.Sale)
+                    .WithMany(s => s.SaleItems)
+                    .HasForeignKey(i => i.ReceiptNumber)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

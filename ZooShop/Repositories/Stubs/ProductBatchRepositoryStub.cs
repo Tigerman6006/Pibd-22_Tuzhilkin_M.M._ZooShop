@@ -106,7 +106,7 @@ namespace ZooShop.Repositories.Stubs
         {
             _logger.LogInformation(
                 "Добавление партии. ProductCode: {ProductCode}, Quantity: {Quantity}",
-                batch.Products?.ProductCode,
+                batch.Products?.SalableCode,
                 batch.QuantityReceived);
 
             using var transaction = _context.Database.BeginTransaction();

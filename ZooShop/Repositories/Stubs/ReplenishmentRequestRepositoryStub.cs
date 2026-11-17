@@ -108,7 +108,7 @@ namespace ZooShop.Repositories.Stubs
         {
             _logger.LogInformation(
                 "Создание заявки. ProductCode: {ProductCode}, Quantity: {Quantity}",
-                request.Product?.ProductCode,
+                request.Product?.SalableCode,
                 request.RequiredQuantity);
 
             try

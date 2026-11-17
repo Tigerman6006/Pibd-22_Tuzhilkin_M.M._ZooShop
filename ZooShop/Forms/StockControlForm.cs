@@ -39,7 +39,7 @@ namespace ZooShop
                 foreach (Product product in products)
                 {
                     int currentStock = _batchRepository
-                        .GetByProduct(product.ProductCode)
+                        .GetByProduct(product.SalableCode)
                         .Sum(batch => batch.RemainingQuantity);
 
                     int minimum = product.StockNorm?.MinimumStockLevel ?? 0;
@@ -65,7 +65,7 @@ namespace ZooShop
                     }
 
                     int rowIndex = dgvStock.Rows.Add(
-                        product.ProductCode,
+                        product.SalableCode,
                         product.Name,
                         currentStock,
                         minimum,

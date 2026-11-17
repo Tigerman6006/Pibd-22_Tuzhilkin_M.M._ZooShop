@@ -120,7 +120,7 @@ namespace ZooShop
             var filteredProducts = _products
                 .Where(p =>
                     p.Name.ToLowerInvariant().Contains(search) ||
-                    p.ProductCode.ToString().Contains(search))
+                    p.SalableCode.ToString().Contains(search))
                 .ToList();
 
             dgvProducts.Rows.Clear();
@@ -128,11 +128,11 @@ namespace ZooShop
             foreach (Product product in filteredProducts)
             {
                 int remainingStock = _batchRepository
-                        .GetByProduct(product.ProductCode)
+                        .GetByProduct(product.SalableCode)
                         .Sum(batch => batch.RemainingQuantity);
 
                 int rowIndex = dgvProducts.Rows.Add(
-                    product.ProductCode,
+                    product.SalableCode,
                     product.Name,
                     product.PurchasePrice,
                     product.SellingPrice,
@@ -224,7 +224,7 @@ namespace ZooShop
 
             try
             {
-                _productRepository.Delete(product.ProductCode);
+                _productRepository.Delete(product.SalableCode);
                 LoadProducts();
             }
             catch (Exception ex)

@@ -22,79 +22,6 @@ namespace ZooShop.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ZooShop.Entities.Animal", b =>
-                {
-                    b.Property<int>("AnimalCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AnimalCode"));
-
-                    b.Property<string>("Breed")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<decimal>("PurchasePrice")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("numeric(12,2)");
-
-                    b.Property<decimal>("SellingPrice")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("numeric(12,2)");
-
-                    b.Property<string>("Species")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("AnimalCode");
-
-                    b.ToTable("Animals", (string)null);
-                });
-
-            modelBuilder.Entity("ZooShop.Entities.Product", b =>
-                {
-                    b.Property<int>("ProductCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProductCode"));
-
-                    b.Property<int?>("CategoryCode")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<decimal>("PurchasePrice")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("numeric(12,2)");
-
-                    b.Property<decimal>("SellingPrice")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("numeric(12,2)");
-
-                    b.HasKey("ProductCode");
-
-                    b.HasIndex("CategoryCode");
-
-                    b.ToTable("Products", (string)null);
-                });
-
             modelBuilder.Entity("ZooShop.Entities.ProductBatch", b =>
                 {
                     b.Property<int>("BatchNumber")
@@ -118,7 +45,7 @@ namespace ZooShop.Migrations
                     b.Property<int>("RemainingQuantity")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SupplierCode")
+                    b.Property<int>("SupplierCode")
                         .HasColumnType("integer");
 
                     b.HasKey("BatchNumber");
@@ -170,18 +97,41 @@ namespace ZooShop.Migrations
                     b.Property<int?>("SupplierCode")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SupplierCode1")
-                        .HasColumnType("integer");
-
                     b.HasKey("RequestNumber");
 
                     b.HasIndex("ProductCode");
 
                     b.HasIndex("SupplierCode");
 
-                    b.HasIndex("SupplierCode1");
-
                     b.ToTable("ReplenishmentRequests", (string)null);
+                });
+
+            modelBuilder.Entity("ZooShop.Entities.Salable", b =>
+                {
+                    b.Property<int>("SalableCode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SalableCode"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<decimal>("PurchasePrice")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("numeric(12,2)");
+
+                    b.Property<decimal>("SellingPrice")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("numeric(12,2)");
+
+                    b.HasKey("SalableCode");
+
+                    b.ToTable("Salables", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("ZooShop.Entities.Sale", b =>
@@ -231,9 +181,14 @@ namespace ZooShop.Migrations
                     b.Property<int?>("ReceiptNumber")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("SalableCode")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ReceiptNumber");
+
+                    b.HasIndex("SalableCode");
 
                     b.ToTable("SaleItems", (string)null);
                 });
@@ -264,66 +219,39 @@ namespace ZooShop.Migrations
                     b.ToTable("Suppliers", (string)null);
                 });
 
+            modelBuilder.Entity("ZooShop.Entities.Animal", b =>
+                {
+                    b.HasBaseType("ZooShop.Entities.Salable");
+
+                    b.Property<string>("Breed")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Species")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.ToTable("Animals", (string)null);
+                });
+
             modelBuilder.Entity("ZooShop.Entities.Product", b =>
                 {
-                    b.HasOne("ZooShop.Entities.ProductCategory", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryCode")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.HasBaseType("ZooShop.Entities.Salable");
 
-                    b.OwnsOne("ZooShop.Entities.StockNorm", "StockNorm", b1 =>
-                        {
-                            b1.Property<int>("ProductCode")
-                                .HasColumnType("integer");
+                    b.Property<int?>("CategoryCode")
+                        .HasColumnType("integer");
 
-                            b1.Property<int>("MaximumStockLevel")
-                                .HasColumnType("integer")
-                                .HasColumnName("MaximumStockLevel");
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone");
 
-                            b1.Property<int>("MinimumStockLevel")
-                                .HasColumnType("integer")
-                                .HasColumnName("MinimumStockLevel");
+                    b.HasIndex("CategoryCode");
 
-                            b1.Property<int>("ReviewPeriod")
-                                .HasColumnType("integer")
-                                .HasColumnName("ReviewPeriod");
-
-                            b1.HasKey("ProductCode");
-
-                            b1.ToTable("StockNorms");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ProductCode");
-                        });
-
-                    b.OwnsOne("ZooShop.Entities.StorageConditions", "StorageConditions", b1 =>
-                        {
-                            b1.Property<int>("ProductCode")
-                                .HasColumnType("integer");
-
-                            b1.Property<double>("Humidity")
-                                .HasColumnType("double precision")
-                                .HasColumnName("StorageHumidity");
-
-                            b1.Property<int>("SpecialRequirements")
-                                .HasColumnType("integer")
-                                .HasColumnName("SpecialRequirements");
-
-                            b1.Property<double>("Temperature")
-                                .HasColumnType("double precision")
-                                .HasColumnName("StorageTemperature");
-
-                            b1.HasKey("ProductCode");
-
-                            b1.ToTable("Products");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ProductCode");
-                        });
-
-                    b.Navigation("StockNorm");
-
-                    b.Navigation("StorageConditions");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("ZooShop.Entities.ProductBatch", b =>
@@ -337,7 +265,8 @@ namespace ZooShop.Migrations
                     b.HasOne("ZooShop.Entities.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierCode")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Products");
 
@@ -353,13 +282,9 @@ namespace ZooShop.Migrations
                         .IsRequired();
 
                     b.HasOne("ZooShop.Entities.Supplier", "Supplier")
-                        .WithMany()
+                        .WithMany("ReplenishmentRequests")
                         .HasForeignKey("SupplierCode")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("ZooShop.Entities.Supplier", null)
-                        .WithMany("ReplenishmentRequests")
-                        .HasForeignKey("SupplierCode1");
 
                     b.Navigation("Product");
 
@@ -368,10 +293,98 @@ namespace ZooShop.Migrations
 
             modelBuilder.Entity("ZooShop.Entities.SaleItem", b =>
                 {
-                    b.HasOne("ZooShop.Entities.Sale", null)
+                    b.HasOne("ZooShop.Entities.Sale", "Sale")
                         .WithMany("SaleItems")
                         .HasForeignKey("ReceiptNumber")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ZooShop.Entities.Salable", "Salable")
+                        .WithMany()
+                        .HasForeignKey("SalableCode")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Salable");
+
+                    b.Navigation("Sale");
+                });
+
+            modelBuilder.Entity("ZooShop.Entities.Animal", b =>
+                {
+                    b.HasOne("ZooShop.Entities.Salable", null)
+                        .WithOne()
+                        .HasForeignKey("ZooShop.Entities.Animal", "SalableCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ZooShop.Entities.Product", b =>
+                {
+                    b.HasOne("ZooShop.Entities.ProductCategory", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryCode")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ZooShop.Entities.Salable", null)
+                        .WithOne()
+                        .HasForeignKey("ZooShop.Entities.Product", "SalableCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("ZooShop.Entities.StockNorm", "StockNorm", b1 =>
+                        {
+                            b1.Property<int>("ProductSalableCode")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("MaximumStockLevel")
+                                .HasColumnType("integer")
+                                .HasColumnName("MaximumStockLevel");
+
+                            b1.Property<int>("MinimumStockLevel")
+                                .HasColumnType("integer")
+                                .HasColumnName("MinimumStockLevel");
+
+                            b1.Property<int>("ReviewPeriod")
+                                .HasColumnType("integer")
+                                .HasColumnName("ReviewPeriod");
+
+                            b1.HasKey("ProductSalableCode");
+
+                            b1.ToTable("StockNorms");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductSalableCode");
+                        });
+
+                    b.OwnsOne("ZooShop.Entities.StorageConditions", "StorageConditions", b1 =>
+                        {
+                            b1.Property<int>("ProductSalableCode")
+                                .HasColumnType("integer");
+
+                            b1.Property<double>("Humidity")
+                                .HasColumnType("double precision")
+                                .HasColumnName("StorageHumidity");
+
+                            b1.Property<int>("SpecialRequirements")
+                                .HasColumnType("integer")
+                                .HasColumnName("SpecialRequirements");
+
+                            b1.Property<double>("Temperature")
+                                .HasColumnType("double precision")
+                                .HasColumnName("StorageTemperature");
+
+                            b1.HasKey("ProductSalableCode");
+
+                            b1.ToTable("Products");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductSalableCode");
+                        });
+
+                    b.Navigation("Category");
+
+                    b.Navigation("StockNorm");
+
+                    b.Navigation("StorageConditions");
                 });
 
             modelBuilder.Entity("ZooShop.Entities.ProductCategory", b =>

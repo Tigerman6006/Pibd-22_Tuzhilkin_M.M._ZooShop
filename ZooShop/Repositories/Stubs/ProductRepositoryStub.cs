@@ -24,7 +24,7 @@ namespace ZooShop.Repositories.Stubs
         public int CalculateRemainingStock(int productCode)
         {
             return _context.ProductBatches
-                .Where(batch => batch.Products.ProductCode == productCode)
+                .Where(batch => batch.Products.SalableCode == productCode)
                 .Sum(batch => (int?)batch.RemainingQuantity) ?? 0;
         }
         public Product? GetById(int id)
@@ -38,7 +38,7 @@ namespace ZooShop.Repositories.Stubs
                     .Include(p => p.StockNorm)
                     .Include(p => p.StorageConditions)
                     .Include(p => p.Category)
-                    .FirstOrDefault(p => p.ProductCode == id);
+                    .FirstOrDefault(p => p.SalableCode == id);
 
                 if (product == null)
                 {
@@ -135,7 +135,7 @@ namespace ZooShop.Repositories.Stubs
 
                 _logger.LogInformation(
                     "Продукт успешно добавлен. ID: {ProductCode}",
-                    product.ProductCode);
+                    product.SalableCode);
             }
             catch (Exception ex)
             {
@@ -152,7 +152,7 @@ namespace ZooShop.Repositories.Stubs
         {
             _logger.LogInformation(
                "Обновление продукта с ID: {ProductCode}",
-               product.ProductCode);
+               product.SalableCode);
 
             try
             {
@@ -161,14 +161,14 @@ namespace ZooShop.Repositories.Stubs
 
                 _logger.LogInformation(
                     "Продукт {ProductCode} успешно обновлен",
-                    product.ProductCode);
+                    product.SalableCode);
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     ex,
                     "Ошибка обновления продукта {ProductCode}",
-                    product.ProductCode);
+                    product.SalableCode);
 
                 throw;
             }
@@ -182,7 +182,7 @@ namespace ZooShop.Repositories.Stubs
             try
             {
                 var product = _context.Products
-                    .FirstOrDefault(p => p.ProductCode == id);
+                    .FirstOrDefault(p => p.SalableCode == id);
 
                 if (product == null)
                 {

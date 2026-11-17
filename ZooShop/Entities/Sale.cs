@@ -12,7 +12,7 @@ namespace ZooShop.Entities
         private DateTime saleDate;
         private int amount;
         private string paymentMethod;
-        private List<SaleItem>? saleItems;
+        private List<SaleItem>? saleItems = new();
         private Sale( DateTime saleDate, int amount, string paymentMethod)
         {
             this.saleDate = saleDate;

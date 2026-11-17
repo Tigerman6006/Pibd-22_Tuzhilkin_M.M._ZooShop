@@ -26,22 +26,22 @@ namespace ZooShop.Repositories.Stubs
         public Animal? GetById(int id)
         {
             _logger.LogInformation(
-                "Получение животного. AnimalCode: {AnimalCode}", id);
+                "Получение животного. SalableCode: {SalableCode}", id);
 
             try
             {
                 var animal = _context.Animals
-                    .FirstOrDefault(a => a.AnimalCode == id);
+                    .FirstOrDefault(a => a.SalableCode == id);
 
                 if (animal == null)
                 {
                     _logger.LogWarning(
-                        "Животное {AnimalCode} не найдено", id);
+                        "Животное {SalableCode} не найдено", id);
                 }
                 else
                 {
                     _logger.LogInformation(
-                        "Животное {AnimalCode} найдено", id);
+                        "Животное {SalableCode} найдено", id);
                 }
 
                 return animal;
@@ -49,7 +49,7 @@ namespace ZooShop.Repositories.Stubs
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "Ошибка получения животного {AnimalCode}", id);
+                    "Ошибка получения животного {SalableCode}", id);
                 throw;
             }
         }
@@ -106,8 +106,8 @@ namespace ZooShop.Repositories.Stubs
                 _context.SaveChanges();
 
                 _logger.LogInformation(
-                    "Животное добавлено. AnimalCode: {AnimalCode}",
-                    animal.AnimalCode);
+                    "Животное добавлено. SalableCode: {SalableCode}",
+                    animal.SalableCode);
             }
             catch (Exception ex)
             {
@@ -121,8 +121,8 @@ namespace ZooShop.Repositories.Stubs
         public void Update(Animal animal)
         {
             _logger.LogInformation(
-                "Обновление животного. AnimalCode: {AnimalCode}",
-                animal.AnimalCode);
+                "Обновление животного. SalableCode: {SalableCode}",
+                animal.SalableCode);
 
             try
             {
@@ -130,14 +130,14 @@ namespace ZooShop.Repositories.Stubs
                 _context.SaveChanges();
 
                 _logger.LogInformation(
-                    "Животное {AnimalCode} обновлено",
-                    animal.AnimalCode);
+                    "Животное {SalableCode} обновлено",
+                    animal.SalableCode);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "Ошибка обновления животного {AnimalCode}",
-                    animal.AnimalCode);
+                    "Ошибка обновления животного {SalableCode}",
+                    animal.SalableCode);
                 throw;
             }
         }
@@ -145,7 +145,7 @@ namespace ZooShop.Repositories.Stubs
         public void Delete(int id)
         {
             _logger.LogInformation(
-                "Удаление животного. AnimalCode: {AnimalCode}", id);
+                "Удаление животного. SalableCode: {SalableCode}", id);
 
             try
             {
@@ -154,7 +154,7 @@ namespace ZooShop.Repositories.Stubs
                 if (animal == null)
                 {
                     _logger.LogWarning(
-                        "Животное {AnimalCode} не найдено для удаления", id);
+                        "Животное {SalableCode} не найдено для удаления", id);
                     return;
                 }
 
@@ -162,12 +162,12 @@ namespace ZooShop.Repositories.Stubs
                 _context.SaveChanges();
 
                 _logger.LogInformation(
-                    "Животное {AnimalCode} удалено", id);
+                    "Животное {SalableCode} удалено", id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "Ошибка удаления животного {AnimalCode}", id);
+                    "Ошибка удаления животного {SalableCode}", id);
                 throw;
             }
         }

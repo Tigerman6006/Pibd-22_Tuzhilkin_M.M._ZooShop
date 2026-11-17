@@ -13,24 +13,6 @@ namespace ZooShop.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Animals",
-                columns: table => new
-                {
-                    AnimalCode = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Species = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Breed = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    PurchasePrice = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
-                    SellingPrice = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Animals", x => x.AnimalCode);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductCategories",
                 columns: table => new
                 {
@@ -41,6 +23,21 @@ namespace ZooShop.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductCategories", x => x.CategoryCode);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Salables",
+                columns: table => new
+                {
+                    SalableCode = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    PurchasePrice = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
+                    SellingPrice = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Salables", x => x.SalableCode);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,29 +71,51 @@ namespace ZooShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Animals",
+                columns: table => new
+                {
+                    SalableCode = table.Column<int>(type: "integer", nullable: false),
+                    Species = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Breed = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Animals", x => x.SalableCode);
+                    table.ForeignKey(
+                        name: "FK_Animals_Salables_SalableCode",
+                        column: x => x.SalableCode,
+                        principalTable: "Salables",
+                        principalColumn: "SalableCode",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
-                    ProductCode = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SalableCode = table.Column<int>(type: "integer", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     StorageTemperature = table.Column<double>(type: "double precision", nullable: true),
                     StorageHumidity = table.Column<double>(type: "double precision", nullable: true),
                     SpecialRequirements = table.Column<int>(type: "integer", nullable: true),
-                    CategoryCode = table.Column<int>(type: "integer", nullable: true),
-                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    PurchasePrice = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
-                    SellingPrice = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false)
+                    CategoryCode = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.ProductCode);
+                    table.PrimaryKey("PK_Products", x => x.SalableCode);
                     table.ForeignKey(
                         name: "FK_Products_ProductCategories_CategoryCode",
                         column: x => x.CategoryCode,
                         principalTable: "ProductCategories",
                         principalColumn: "CategoryCode",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_Salables_SalableCode",
+                        column: x => x.SalableCode,
+                        principalTable: "Salables",
+                        principalColumn: "SalableCode",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,6 +124,7 @@ namespace ZooShop.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SalableCode = table.Column<int>(type: "integer", nullable: true),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
                     Discount = table.Column<decimal>(type: "numeric(5,2)", precision: 5, scale: 2, nullable: false),
@@ -113,6 +133,12 @@ namespace ZooShop.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SaleItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SaleItems_Salables_SalableCode",
+                        column: x => x.SalableCode,
+                        principalTable: "Salables",
+                        principalColumn: "SalableCode",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_SaleItems_Sales_ReceiptNumber",
                         column: x => x.ReceiptNumber,
@@ -132,7 +158,7 @@ namespace ZooShop.Migrations
                     QuantityReceived = table.Column<int>(type: "integer", nullable: false),
                     RemainingQuantity = table.Column<int>(type: "integer", nullable: false),
                     ProductCode = table.Column<int>(type: "integer", nullable: false),
-                    SupplierCode = table.Column<int>(type: "integer", nullable: true)
+                    SupplierCode = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,14 +167,14 @@ namespace ZooShop.Migrations
                         name: "FK_ProductBatches_Products_ProductCode",
                         column: x => x.ProductCode,
                         principalTable: "Products",
-                        principalColumn: "ProductCode",
+                        principalColumn: "SalableCode",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ProductBatches_Suppliers_SupplierCode",
                         column: x => x.SupplierCode,
                         principalTable: "Suppliers",
                         principalColumn: "SupplierCode",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -160,8 +186,7 @@ namespace ZooShop.Migrations
                     RequiredQuantity = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     ProductCode = table.Column<int>(type: "integer", nullable: false),
-                    SupplierCode = table.Column<int>(type: "integer", nullable: true),
-                    SupplierCode1 = table.Column<int>(type: "integer", nullable: true)
+                    SupplierCode = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -170,7 +195,7 @@ namespace ZooShop.Migrations
                         name: "FK_ReplenishmentRequests_Products_ProductCode",
                         column: x => x.ProductCode,
                         principalTable: "Products",
-                        principalColumn: "ProductCode",
+                        principalColumn: "SalableCode",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ReplenishmentRequests_Suppliers_SupplierCode",
@@ -178,30 +203,25 @@ namespace ZooShop.Migrations
                         principalTable: "Suppliers",
                         principalColumn: "SupplierCode",
                         onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_ReplenishmentRequests_Suppliers_SupplierCode1",
-                        column: x => x.SupplierCode1,
-                        principalTable: "Suppliers",
-                        principalColumn: "SupplierCode");
                 });
 
             migrationBuilder.CreateTable(
                 name: "StockNorms",
                 columns: table => new
                 {
-                    ProductCode = table.Column<int>(type: "integer", nullable: false),
+                    ProductSalableCode = table.Column<int>(type: "integer", nullable: false),
                     MinimumStockLevel = table.Column<int>(type: "integer", nullable: false),
                     MaximumStockLevel = table.Column<int>(type: "integer", nullable: false),
                     ReviewPeriod = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StockNorms", x => x.ProductCode);
+                    table.PrimaryKey("PK_StockNorms", x => x.ProductSalableCode);
                     table.ForeignKey(
-                        name: "FK_StockNorms_Products_ProductCode",
-                        column: x => x.ProductCode,
+                        name: "FK_StockNorms_Products_ProductSalableCode",
+                        column: x => x.ProductSalableCode,
                         principalTable: "Products",
-                        principalColumn: "ProductCode",
+                        principalColumn: "SalableCode",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -231,14 +251,14 @@ namespace ZooShop.Migrations
                 column: "SupplierCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReplenishmentRequests_SupplierCode1",
-                table: "ReplenishmentRequests",
-                column: "SupplierCode1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SaleItems_ReceiptNumber",
                 table: "SaleItems",
                 column: "ReceiptNumber");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SaleItems_SalableCode",
+                table: "SaleItems",
+                column: "SalableCode");
         }
 
         /// <inheritdoc />
@@ -270,6 +290,9 @@ namespace ZooShop.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductCategories");
+
+            migrationBuilder.DropTable(
+                name: "Salables");
         }
     }
 }

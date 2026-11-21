@@ -53,6 +53,9 @@ namespace ZooShop
                     )
                 );
             }
+
+            clbSpecialRequirements.DisplayMember = "Value";
+            clbSpecialRequirements.ValueMember = "Key";
         }
 
         private void LoadProductData()
@@ -92,12 +95,13 @@ namespace ZooShop
 
             for (int i = 0; i < clbSpecialRequirements.Items.Count; i++)
             {
-                SpecialRequirements item =
-                    (SpecialRequirements)clbSpecialRequirements.Items[i];
+                var item =
+                    (KeyValuePair<SpecialRequirements, string>)
+                    clbSpecialRequirements.Items[i];
 
                 clbSpecialRequirements.SetItemChecked(
                     i,
-                    selected.HasFlag(item));
+                   selected.HasFlag(item.Key));
             }
             if (product.CategoryCode.HasValue)
             {
@@ -132,9 +136,12 @@ namespace ZooShop
                     SpecialRequirements.None;
 
                 foreach (var item in clbSpecialRequirements.CheckedItems)
-                {
-                    requirements |= (SpecialRequirements)item;
-                }
+{
+    var requirement =
+        (KeyValuePair<SpecialRequirements, string>)item;
+
+    requirements |= requirement.Key;
+}
 
                 StorageConditions storageConditions = StorageConditions.CreateConditions((double)nudTemperature.Value,(double)nudHumidity.Value,requirements);
 
@@ -242,6 +249,29 @@ namespace ZooShop
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private string GetRequirementName(SpecialRequirements requirement)
+        {
+            return requirement switch
+            {
+                SpecialRequirements.Fragile =>
+                    "Хрупкий",
+
+                SpecialRequirements.Oxidizable =>
+                    "Окисляемый",
+
+                SpecialRequirements.Volatile =>
+                    "Летучее",
+
+                SpecialRequirements.Fragrant =>
+                    "Запах",
+
+                SpecialRequirements.LightProtection =>
+                    "Защищать от света",
+
+                _ => requirement.ToString()
+            };
         }
     }
 }

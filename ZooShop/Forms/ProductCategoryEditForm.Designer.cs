@@ -11,10 +11,8 @@ namespace ZooShop
 
         private TableLayoutPanel mainLayout;
 
-        private Label lblCategoryCode;
         private Label lblCategoryName;
 
-        private NumericUpDown nudCategoryCode;
         private TextBox txtCategoryName;
 
         private FlowLayoutPanel buttonsPanel;
@@ -32,18 +30,14 @@ namespace ZooShop
         private void InitializeComponent()
         {
             mainLayout = new TableLayoutPanel();
-            lblCategoryCode = new Label();
-            nudCategoryCode = new NumericUpDown();
             lblCategoryName = new Label();
             txtCategoryName = new TextBox();
             buttonsPanel = new FlowLayoutPanel();
             btnCancel = new Button();
             btnSave = new Button();
             mainLayout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)nudCategoryCode).BeginInit();
             buttonsPanel.SuspendLayout();
             SuspendLayout();
-            ConfigureLabel(lblCategoryCode, "Код категории:");
             ConfigureLabel(lblCategoryName, "Название категории:");
             ConfigureButton(btnCancel, "Отмена");
             ConfigureButton(btnSave, "Сохранить");
@@ -53,8 +47,6 @@ namespace ZooShop
             mainLayout.ColumnCount = 2;
             mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
             mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
-            mainLayout.Controls.Add(lblCategoryCode, 0, 0);
-            mainLayout.Controls.Add(nudCategoryCode, 1, 0);
             mainLayout.Controls.Add(lblCategoryName, 0, 1);
             mainLayout.Controls.Add(txtCategoryName, 1, 1);
             mainLayout.Controls.Add(buttonsPanel, 0, 2);
@@ -68,24 +60,6 @@ namespace ZooShop
             mainLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             mainLayout.Size = new Size(450, 210);
             mainLayout.TabIndex = 0;
-            // 
-            // lblCategoryCode
-            // 
-            lblCategoryCode.Location = new Point(18, 15);
-            lblCategoryCode.Name = "lblCategoryCode";
-            lblCategoryCode.Size = new Size(100, 23);
-            lblCategoryCode.TabIndex = 0;
-            // 
-            // nudCategoryCode
-            // 
-            nudCategoryCode.Dock = DockStyle.Fill;
-            nudCategoryCode.Location = new Point(186, 18);
-            nudCategoryCode.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
-            nudCategoryCode.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            nudCategoryCode.Name = "nudCategoryCode";
-            nudCategoryCode.Size = new Size(246, 27);
-            nudCategoryCode.TabIndex = 1;
-            nudCategoryCode.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // lblCategoryName
             // 
@@ -145,7 +119,6 @@ namespace ZooShop
             Text = "Категория товара";
             mainLayout.ResumeLayout(false);
             mainLayout.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)nudCategoryCode).EndInit();
             buttonsPanel.ResumeLayout(false);
             ResumeLayout(false);
         }

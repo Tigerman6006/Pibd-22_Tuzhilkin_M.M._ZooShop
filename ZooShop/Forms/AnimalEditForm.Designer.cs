@@ -10,7 +10,6 @@ namespace ZooShop
 
         private TableLayoutPanel mainLayout;
 
-        private Label lblAnimalCode;
         private Label lblName;
         private Label lblSpecies;
         private Label lblBreed;
@@ -18,7 +17,6 @@ namespace ZooShop
         private Label lblPurchasePrice;
         private Label lblSellingPrice;
 
-        private NumericUpDown nudAnimalCode;
         private TextBox txtName;
         private TextBox txtSpecies;
         private TextBox txtBreed;
@@ -45,7 +43,6 @@ namespace ZooShop
             mainLayout = new TableLayoutPanel();
             buttonsPanel = new FlowLayoutPanel();
 
-            lblAnimalCode = new Label();
             lblName = new Label();
             lblSpecies = new Label();
             lblBreed = new Label();
@@ -53,7 +50,6 @@ namespace ZooShop
             lblPurchasePrice = new Label();
             lblSellingPrice = new Label();
 
-            nudAnimalCode = new NumericUpDown();
             txtName = new TextBox();
             txtSpecies = new TextBox();
             txtBreed = new TextBox();
@@ -67,7 +63,6 @@ namespace ZooShop
             mainLayout.SuspendLayout();
             buttonsPanel.SuspendLayout();
 
-            ((System.ComponentModel.ISupportInitialize)nudAnimalCode).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudPurchasePrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudSellingPrice).BeginInit();
 
@@ -93,7 +88,6 @@ namespace ZooShop
             mainLayout.RowStyles.Add(
                 new RowStyle(SizeType.Percent, 100F));
 
-            ConfigureLabel(lblAnimalCode, "Код животного:");
             ConfigureLabel(lblName, "Кличка:");
             ConfigureLabel(lblSpecies, "Вид:");
             ConfigureLabel(lblBreed, "Порода:");
@@ -101,7 +95,6 @@ namespace ZooShop
             ConfigureLabel(lblPurchasePrice, "Закупочная цена:");
             ConfigureLabel(lblSellingPrice, "Цена продажи:");
 
-            ConfigureNumber(nudAnimalCode, 1, 1000000, 0);
             ConfigureNumber(nudPurchasePrice, 0, 1000000, 2);
             ConfigureNumber(nudSellingPrice, 0, 1000000, 2);
 
@@ -114,7 +107,6 @@ namespace ZooShop
             dtpDateOfBirth.MaxDate = DateTime.Today;
 
 
-            AddRow(0, lblAnimalCode, nudAnimalCode);
             AddRow(1, lblName, txtName);
             AddRow(2, lblSpecies, txtSpecies);
             AddRow(3, lblBreed, txtBreed);
@@ -153,7 +145,6 @@ namespace ZooShop
             mainLayout.ResumeLayout(false);
             buttonsPanel.ResumeLayout(false);
 
-            ((System.ComponentModel.ISupportInitialize)nudAnimalCode).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudPurchasePrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudSellingPrice).EndInit();
 

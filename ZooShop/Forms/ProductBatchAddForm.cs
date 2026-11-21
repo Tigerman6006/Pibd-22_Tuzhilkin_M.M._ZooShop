@@ -36,7 +36,7 @@ namespace ZooShop
 
             cmbProduct.DataSource = products;
             cmbProduct.DisplayMember = nameof(Product.Name);
-            cmbProduct.ValueMember = nameof(Product.ProductCode);
+            cmbProduct.ValueMember = nameof(Product.SalableCode);
             cmbProduct.SelectedIndex = products.Count > 0 ? 0 : -1;
         }
 
@@ -88,12 +88,14 @@ namespace ZooShop
             try
             {
 
-                int batchNumber = GenerateBatchNumber();
 
                 ProductBatch batch = ProductBatch.CreateBatch(
-                    batchNumber,
-                    arrivalDate,
-                    expirationDate,
+                    DateTime.SpecifyKind(
+                            dtpArrivalDate.Value,
+                            DateTimeKind.Utc),
+                    DateTime.SpecifyKind(
+                            dtpExpirationDate.Value,
+                            DateTimeKind.Utc),
                     (int)nudQuantity.Value,
                     product,
                     supplier);
@@ -119,13 +121,6 @@ namespace ZooShop
             }
         }
 
-        private int GenerateBatchNumber()
-        {
-            return _batchRepository.GetAll()
-                .Select(batch => batch.BatchNumber)
-                .DefaultIfEmpty(0)
-                .Max() + 1;
-        }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {

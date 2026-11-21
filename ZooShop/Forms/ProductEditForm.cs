@@ -14,17 +14,21 @@ namespace ZooShop
     {
         private readonly IProductRepository _productRepository;
         private readonly Product? _editingProduct;
+        private readonly IProductCategoryRepository _categoryRepository;
 
         public ProductEditForm(
-            IProductRepository productRepository,
-            Product? product = null)
+    IProductRepository productRepository,
+    IProductCategoryRepository categoryRepository,
+    Product? product = null)
         {
             InitializeComponent();
 
             _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
             _editingProduct = product;
 
             LoadSpecialRequirements();
+            LoadCategories();
             LoadProductData();
 
             Text = _editingProduct == null
@@ -42,22 +46,28 @@ namespace ZooShop
                 if (requirement == SpecialRequirements.None)
                     continue;
 
-                clbSpecialRequirements.Items.Add(requirement);
+                clbSpecialRequirements.Items.Add(
+                    new KeyValuePair<SpecialRequirements, string>(
+                        requirement,
+                        GetRequirementName(requirement)
+                    )
+                );
             }
+
+            clbSpecialRequirements.DisplayMember = "Value";
+            clbSpecialRequirements.ValueMember = "Key";
         }
 
         private void LoadProductData()
         {
             if (_editingProduct == null)
             {
-                nudProductCode.Value = 1;
                 dtpExpirationDate.Value = DateTime.Today.AddMonths(6);
                 return;
             }
 
             Product product = _editingProduct;
 
-            nudProductCode.Value = product.ProductCode;
             txtName.Text = product.Name;
 
             nudPurchasePrice.Value = product.PurchasePrice;
@@ -85,18 +95,34 @@ namespace ZooShop
 
             for (int i = 0; i < clbSpecialRequirements.Items.Count; i++)
             {
-                SpecialRequirements item =
-                    (SpecialRequirements)clbSpecialRequirements.Items[i];
+                var item =
+                    (KeyValuePair<SpecialRequirements, string>)
+                    clbSpecialRequirements.Items[i];
 
                 clbSpecialRequirements.SetItemChecked(
                     i,
-                    selected.HasFlag(item));
+                   selected.HasFlag(item.Key));
+            }
+            if (product.CategoryCode.HasValue)
+            {
+                cmbCategory.SelectedValue = product.CategoryCode.Value;
+            }
+            else
+            {
+                cmbCategory.SelectedIndex = -1;
             }
 
-            // Код товара при редактировании менять нельзя.
-            nudProductCode.Enabled = false;
         }
+        private void LoadCategories()
+        {
+            var categories = _categoryRepository.GetAll().ToList();
 
+            cmbCategory.DataSource = categories;
+            cmbCategory.DisplayMember = nameof(ProductCategory.CategoryName);
+            cmbCategory.ValueMember = nameof(ProductCategory.CategoryCode);
+
+            cmbCategory.SelectedIndex = -1;
+        }
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateInput())
@@ -110,24 +136,29 @@ namespace ZooShop
                     SpecialRequirements.None;
 
                 foreach (var item in clbSpecialRequirements.CheckedItems)
-                {
-                    requirements |= (SpecialRequirements)item;
-                }
+{
+    var requirement =
+        (KeyValuePair<SpecialRequirements, string>)item;
+
+    requirements |= requirement.Key;
+}
 
                 StorageConditions storageConditions = StorageConditions.CreateConditions((double)nudTemperature.Value,(double)nudHumidity.Value,requirements);
 
                 if (_editingProduct == null)
                 {
                     Product product = Product.CreateProduct(
-                        (int)nudProductCode.Value,
                         txtName.Text.Trim(),
                         nudPurchasePrice.Value,
                         nudSellingPrice.Value,
+                        DateTime.SpecifyKind(
+                            dtpExpirationDate.Value,
+                            DateTimeKind.Utc),
                         stockNorm,
                         storageConditions
                     );
-
-                    product.ExpirationDate = dtpExpirationDate.Value;
+                    product.CategoryCode = cmbCategory.SelectedValue == null ? null
+                        : (int?)cmbCategory.SelectedValue;
 
                     _productRepository.Add(product);
                 }
@@ -136,10 +167,11 @@ namespace ZooShop
                     _editingProduct.Name = txtName.Text.Trim();
                     _editingProduct.PurchasePrice = nudPurchasePrice.Value;
                     _editingProduct.SellingPrice = nudSellingPrice.Value;
-                    _editingProduct.ExpirationDate = dtpExpirationDate.Value;
-
+                    _editingProduct.ExpirationDate = DateTime.SpecifyKind(dtpExpirationDate.Value,DateTimeKind.Utc);
                     _editingProduct.StockNorm = stockNorm;
                     _editingProduct.StorageConditions = storageConditions;
+                    _editingProduct.CategoryCode = cmbCategory.SelectedValue == null ? null
+                        : (int?)cmbCategory.SelectedValue;
 
                     _productRepository.Update(_editingProduct);
                 }
@@ -217,6 +249,29 @@ namespace ZooShop
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private string GetRequirementName(SpecialRequirements requirement)
+        {
+            return requirement switch
+            {
+                SpecialRequirements.Fragile =>
+                    "Хрупкий",
+
+                SpecialRequirements.Oxidizable =>
+                    "Окисляемый",
+
+                SpecialRequirements.Volatile =>
+                    "Летучее",
+
+                SpecialRequirements.Fragrant =>
+                    "Запах",
+
+                SpecialRequirements.LightProtection =>
+                    "Защищать от света",
+
+                _ => requirement.ToString()
+            };
         }
     }
 }

@@ -33,7 +33,7 @@ namespace ZooShop
 
             cmbProduct.DataSource = products;
             cmbProduct.DisplayMember = nameof(Product.Name);
-            cmbProduct.ValueMember = nameof(Product.ProductCode);
+            cmbProduct.ValueMember = nameof(Product.SalableCode);
             cmbProduct.SelectedIndex = products.Count > 0 ? 0 : -1;
         }
 

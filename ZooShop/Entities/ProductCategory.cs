@@ -11,15 +11,17 @@ namespace ZooShop.Entities
     {
         private int categoryCode;
         private string categoryName;
-        private List<Product>? products;
-        private ProductCategory(int Code, string Name)
+        private List<Product>? products = new();
+        private ProductCategory(string categoryName)
         {
-            categoryCode = Code;
-            categoryName = Name;
+            this.categoryName = categoryName;
         }
-        public static ProductCategory CreateCategory(int Code, string Name)
+        public ProductCategory()
         {
-            return new ProductCategory(Code, Name);
+        }
+        public static ProductCategory CreateCategory(string categoryName)
+        {
+            return new ProductCategory(categoryName);
         }
         
         public int CategoryCode { 

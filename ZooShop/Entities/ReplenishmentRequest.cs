@@ -13,26 +13,28 @@ namespace ZooShop.Entities
         private DateTime creationDate;
         private int requiredQuantity;
         private Status status;
-        private Product product;
-        private static int nextRequestNumber = 1;
+        private Product? product;
         private Supplier? supplier;
-        private ReplenishmentRequest(int requestNumber, DateTime creationDate, int requiredQuantity, Status status, Product product)
+        private ReplenishmentRequest(DateTime creationDate, int requiredQuantity, Status status)
         {
-            this.requestNumber = requestNumber;
             this.creationDate = creationDate;
             this.requiredQuantity = requiredQuantity;
             this.status = status;
-            this.product = product;
         }
+        public ReplenishmentRequest()
+        {
+
+        }
+
         public static ReplenishmentRequest CreateRequest(int requiredQuantity, Product product)
         {
-            return new ReplenishmentRequest(
-                nextRequestNumber++,
+            var repReq = new ReplenishmentRequest(
                 DateTime.Now,
                 requiredQuantity,
-                Status.None,
-                product
+                Status.None
             );
+            repReq.SetProduct(product);
+            return repReq;
         }
         public int RequestNumber
         {
@@ -53,7 +55,7 @@ namespace ZooShop.Entities
             get { return status; }
             set { status = value; }
         }
-        public Product Product
+        public Product? Product
         {
             get { return product; }
             set { if (value is not null) { product = value; } }
@@ -61,6 +63,7 @@ namespace ZooShop.Entities
         public Supplier? Supplier
         {
             get { return supplier; }
+            set { if (value is not null) { supplier = value; } }
         }
         public void SendToSupplier(Supplier supplier)
         {
@@ -93,7 +96,14 @@ namespace ZooShop.Entities
 
             Status = Status.InOrder;
         }
+        public void ReceiveRequest()
+        {
+            if (status != Status.Sent)
+                throw new InvalidOperationException(
+                    "Получить можно только отправленную заявку.");
 
+            Status = Status.InOrder;
+        }
         public void CompleteRequest()
         {
             if (status != Status.InOrder)
@@ -110,6 +120,15 @@ namespace ZooShop.Entities
                     "Only ordered requests can fail.");
 
             Status = Status.Failed;
+        }
+        public void SetProduct(Product product)
+        {
+            Product = product ?? throw new ArgumentNullException(nameof(product));
+        }
+
+        public void SetSupplier(Supplier? supplier)
+        {
+            Supplier = supplier;
         }
     }
 }

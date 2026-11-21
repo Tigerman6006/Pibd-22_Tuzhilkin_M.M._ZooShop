@@ -31,14 +31,12 @@ namespace ZooShop
         {
             if (_editingAnimal == null)
             {
-                nudAnimalCode.Value = 1;
                 dtpDateOfBirth.Value = DateTime.Today;
                 return;
             }
 
             Animal animal = _editingAnimal;
 
-            nudAnimalCode.Value = animal.AnimalCode;
             txtName.Text = animal.Name;
             txtSpecies.Text = animal.Species;
             txtBreed.Text = animal.Breed;
@@ -49,8 +47,6 @@ namespace ZooShop
             dtpDateOfBirth.Value = animal.DateOfBirth;
 
 
-            // Код нельзя менять при редактировании.
-            nudAnimalCode.Enabled = false;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -63,13 +59,14 @@ namespace ZooShop
                 if (_editingAnimal == null)
                 {
                     Animal animal = Animal.CreateAnimal(
-                        (int)nudAnimalCode.Value,
                         txtName.Text.Trim(),
                         nudPurchasePrice.Value,
                         nudSellingPrice.Value,
                         txtSpecies.Text.Trim(),
                         txtBreed.Text.Trim(),
-                        dtpDateOfBirth.Value
+                        DateTime.SpecifyKind(
+                            dtpDateOfBirth.Value,
+                            DateTimeKind.Utc)
                     );
 
                     animal.PurchasePrice = nudPurchasePrice.Value;
@@ -83,7 +80,9 @@ namespace ZooShop
                     _editingAnimal.Species = txtSpecies.Text.Trim();
                     _editingAnimal.Breed = txtBreed.Text.Trim();
 
-                    _editingAnimal.DateOfBirth = dtpDateOfBirth.Value;
+                    _editingAnimal.DateOfBirth = DateTime.SpecifyKind(
+                            dtpDateOfBirth.Value,
+                            DateTimeKind.Utc);
 
                     _editingAnimal.PurchasePrice = nudPurchasePrice.Value;
                     _editingAnimal.SellingPrice = nudSellingPrice.Value;

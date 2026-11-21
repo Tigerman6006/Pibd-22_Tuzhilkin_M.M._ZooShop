@@ -106,6 +106,14 @@ namespace ZooShop
             bottomPanel.Dock = DockStyle.Bottom;
             bottomPanel.Height = 65;
             bottomPanel.Padding = new Padding(12);
+            
+            buttonsPanel.Dock = DockStyle.Right;
+            buttonsPanel.FlowDirection = FlowDirection.LeftToRight;
+            buttonsPanel.WrapContents = false;
+            buttonsPanel.AutoSize = true;
+            buttonsPanel.Padding = new Padding(0);
+            buttonsPanel.Margin = new Padding(0);
+            buttonsPanel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
 
             buttonsPanel.Dock = DockStyle.Right;
             buttonsPanel.FlowDirection = FlowDirection.LeftToRight;

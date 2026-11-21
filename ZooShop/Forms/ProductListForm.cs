@@ -14,23 +14,24 @@ namespace ZooShop
     {
         private readonly IProductRepository _productRepository;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IProductBatchRepository _batchRepository;
 
         private List<Product> _products = new();
 
         public ProductListForm(
             IProductRepository productRepository,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, IProductBatchRepository batchRepository)
         {
             InitializeComponent();
 
             _productRepository = productRepository;
             _serviceProvider = serviceProvider;
+            _batchRepository = batchRepository;
 
             ConfigureGrid();
             LoadProducts();
         }
 
-        // Настройка таблицы.
         private void ConfigureGrid()
         {
             dgvProducts.AutoGenerateColumns = false;
@@ -90,7 +91,6 @@ namespace ZooShop
             });
         }
 
-        // Загрузка товаров из репозитория.
         private void LoadProducts()
         {
             try
@@ -109,7 +109,6 @@ namespace ZooShop
             }
         }
 
-        // Поиск по названию и коду.
         private void ApplyFilter()
         {
             string search = txtSearch.Text.Trim()
@@ -118,17 +117,19 @@ namespace ZooShop
             var filteredProducts = _products
                 .Where(p =>
                     p.Name.ToLowerInvariant().Contains(search) ||
-                    p.ProductCode.ToString().Contains(search))
+                    p.SalableCode.ToString().Contains(search))
                 .ToList();
 
             dgvProducts.Rows.Clear();
 
             foreach (Product product in filteredProducts)
             {
-                int remainingStock = product.CalculateRemainingStock();
+                int remainingStock = _batchRepository
+                        .GetByProduct(product.SalableCode)
+                        .Sum(batch => batch.RemainingQuantity);
 
                 int rowIndex = dgvProducts.Rows.Add(
-                    product.ProductCode,
+                    product.SalableCode,
                     product.Name,
                     product.PurchasePrice,
                     product.SellingPrice,
@@ -136,7 +137,6 @@ namespace ZooShop
                     remainingStock
                 );
 
-                // Сохраняем объект товара в строке.
                 dgvProducts.Rows[rowIndex].Tag = product;
             }
 
@@ -144,7 +144,6 @@ namespace ZooShop
                 $"Количество товаров: {filteredProducts.Count}";
         }
 
-        // Получение выбранного товара.
         private Product? GetSelectedProduct()
         {
             if (dgvProducts.SelectedRows.Count == 0)
@@ -153,7 +152,6 @@ namespace ZooShop
             return dgvProducts.SelectedRows[0].Tag as Product;
         }
 
-        // Добавление товара.
         private void btnAdd_Click(object sender, EventArgs e)
         {
             using ProductEditForm form =
@@ -166,7 +164,6 @@ namespace ZooShop
             }
         }
 
-        // Редактирование товара.
         private void btnEdit_Click(object sender, EventArgs e)
         {
             Product? product = GetSelectedProduct();
@@ -193,7 +190,6 @@ namespace ZooShop
             }
         }
 
-        // Удаление товара.
         private void btnDelete_Click(object sender, EventArgs e)
         {
             Product? product = GetSelectedProduct();
@@ -220,7 +216,7 @@ namespace ZooShop
 
             try
             {
-                _productRepository.Delete(product.ProductCode);
+                _productRepository.Delete(product.SalableCode);
                 LoadProducts();
             }
             catch (Exception ex)
@@ -233,13 +229,11 @@ namespace ZooShop
             }
         }
 
-        // Обновление списка.
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             LoadProducts();
         }
 
-        // Поиск при вводе текста.
         private void txtSearch_TextChanged(
             object sender,
             EventArgs e)
@@ -247,7 +241,6 @@ namespace ZooShop
             ApplyFilter();
         }
 
-        // Двойной щелчок по строке открывает редактирование.
         private void dgvProducts_CellDoubleClick(
             object sender,
             DataGridViewCellEventArgs e)

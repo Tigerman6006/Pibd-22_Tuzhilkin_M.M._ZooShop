@@ -30,7 +30,7 @@ namespace ZooShop.Services
             var batches = ProductBatch.GetAllBatches();
 
             var groupedProducts = batches.GroupBy(
-                batch => batch.Products.ProductCode
+                batch => batch.Products.SalableCode
             );
 
             foreach (var group in groupedProducts)
@@ -43,7 +43,7 @@ namespace ZooShop.Services
 
                 if (product.StockNorm.isThresholdExceeded(currentStock))
                 {
-                    stockLevels.Add(product.ProductCode, currentStock);
+                    stockLevels.Add(product.SalableCode, currentStock);
                 }
             }
 

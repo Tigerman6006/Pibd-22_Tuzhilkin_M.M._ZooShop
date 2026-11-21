@@ -140,8 +140,12 @@ public partial class SalesReportForm : Form
             ActivatorUtilities.CreateInstance<SalesReportDetailsForm>(
                 _serviceProvider,
                 rows,
-                start,
-                end);
+                DateTime.SpecifyKind(
+                            start,
+                            DateTimeKind.Utc),
+                DateTime.SpecifyKind(
+                            end,
+                            DateTimeKind.Utc));
 
         detailsForm.ShowDialog(this);
     }

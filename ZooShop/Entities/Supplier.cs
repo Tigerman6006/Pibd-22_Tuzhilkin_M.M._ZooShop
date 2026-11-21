@@ -13,16 +13,15 @@ namespace ZooShop.Entities
         private string phoneNumber;
         private int deliveryLeadTime;
         private List<ReplenishmentRequest> replenishmentRequests = new List<ReplenishmentRequest>();
-        private Supplier(int supplierCode, string name, string phoneNumber, int deliveryLeadTime)
+        private Supplier(string name, string phoneNumber, int deliveryLeadTime)
         {
-            this.supplierCode = supplierCode;
             this.name = name;
             this.phoneNumber = phoneNumber;
             this.deliveryLeadTime = deliveryLeadTime;
         }
-        public static Supplier CreateSupplier(int supplierCode, string name, string phoneNumber, int deliveryLeadTime)
+        public static Supplier CreateSupplier(string name, string phoneNumber, int deliveryLeadTime)
         {
-            return new Supplier(supplierCode, name, phoneNumber, deliveryLeadTime);
+            return new Supplier(name, phoneNumber, deliveryLeadTime);
         }
         public int SupplierCode
         {
@@ -88,9 +87,9 @@ namespace ZooShop.Entities
             request.AcceptBySupplier(this);
         }
 
-        public IReadOnlyList<ReplenishmentRequest> GetReplenishmentRequests()
+        public List<ReplenishmentRequest> ReplenishmentRequests
         {
-            return replenishmentRequests.AsReadOnly();
+            get { return replenishmentRequests; }
         }
     }
 }

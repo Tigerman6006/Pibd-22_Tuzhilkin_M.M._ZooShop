@@ -48,7 +48,7 @@ namespace ZooShop
 
             dgvAnimals.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "AnimalCode",
+                Name = "SalableCode",
                 HeaderText = "Код",
                 Width = 65
             });
@@ -116,7 +116,7 @@ namespace ZooShop
                     a.Name.ToLowerInvariant().Contains(search) ||
                     a.Species.ToLowerInvariant().Contains(search) ||
                     a.Breed.ToLowerInvariant().Contains(search) ||
-                    a.AnimalCode.ToString().Contains(search))
+                    a.SalableCode.ToString().Contains(search))
                 .ToList();
 
             dgvAnimals.Rows.Clear();
@@ -124,7 +124,7 @@ namespace ZooShop
             foreach (Animal animal in filteredAnimals)
             {
                 int rowIndex = dgvAnimals.Rows.Add(
-                    animal.AnimalCode,
+                    animal.SalableCode,
                     animal.Name,
                     animal.Species,
                     animal.Breed,
@@ -199,7 +199,7 @@ namespace ZooShop
 
             try
             {
-                _animalRepository.Delete(animal.AnimalCode);
+                _animalRepository.Delete(animal.SalableCode);
                 LoadAnimals();
             }
             catch (Exception ex)

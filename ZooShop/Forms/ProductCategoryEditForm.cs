@@ -30,15 +30,11 @@ namespace ZooShop
         {
             if (_editingCategory == null)
             {
-                nudCategoryCode.Value = 1;
                 return;
             }
 
-            nudCategoryCode.Value = _editingCategory.CategoryCode;
             txtCategoryName.Text = _editingCategory.CategoryName;
 
-            // Код существующей категории менять нельзя.
-            nudCategoryCode.Enabled = false;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -52,7 +48,6 @@ namespace ZooShop
                 {
                     ProductCategory category =
                         ProductCategory.CreateCategory(
-                            (int)nudCategoryCode.Value,
                             txtCategoryName.Text.Trim()
                         );
 

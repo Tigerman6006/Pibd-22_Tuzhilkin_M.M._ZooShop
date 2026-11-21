@@ -46,7 +46,12 @@ namespace ZooShop
                 if (requirement == SpecialRequirements.None)
                     continue;
 
-                clbSpecialRequirements.Items.Add(requirement);
+                clbSpecialRequirements.Items.Add(
+                    new KeyValuePair<SpecialRequirements, string>(
+                        requirement,
+                        GetRequirementName(requirement)
+                    )
+                );
             }
         }
 
